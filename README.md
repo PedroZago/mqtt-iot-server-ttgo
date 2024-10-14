@@ -2,8 +2,6 @@
 
 Este projeto descreve como configurar um **servidor MQTT** para **monitoramento e rastreamento de bovinos** utilizando dispositivos **IoT**. A arquitetura é composta por **Nodes** e um **Gateway**, responsáveis pela coleta e transmissão de dados via **LoRa**. O servidor é implementado com **Node.js**, utilizando **Eclipse Mosquitto** como broker MQTT e **MongoDB** para armazenamento. O sistema oferece uma **API REST segura** com autenticação **JWT** e comunicação criptografada com **TLS/SSL**. Além disso, suporta **notificações em tempo real** via **Socket.io**.
 
----
-
 ## ⚙️ Arquitetura do Sistema
 
 ### **Nodes**
@@ -28,8 +26,6 @@ Os **Nodes** são responsáveis por **coletar dados fisiológicos e comportament
 - **Processamento Local**:
   - Conversão de sinais analógicos para digitais e filtragem de dados irrelevantes, reduzindo o volume de transmissão para o Gateway.
 
----
-
 ### **Gateway**
 
 O **Gateway** é responsável por receber os dados dos Nodes e encaminhá-los para a **nuvem** por meio de um **Broker MQTT**, permitindo o monitoramento remoto. Ele utiliza a placa **TTGO LoRa32**, equipada com ESP32 e módulo LoRa.
@@ -49,9 +45,29 @@ O **Gateway** é responsável por receber os dados dos Nodes e encaminhá-los pa
 - **Conectividade**:
   - O Gateway é alimentado por uma fonte contínua e conectado à internet para garantir **funcionamento contínuo** e comunicação em tempo real.
 
----
+## 🔄 Fluxo de Dados
 
-## 🛠️ Tecnologias Utilizadas
+1. Os dispositivos TTGO T-Beam coletam e enviam dados via LoRa para o Gateway.
+2. O Gateway retransmite os dados para o Broker MQTT.
+3. O Broker encaminha as mensagens para o Backend.
+4. O Backend processa e armazena os dados no MongoDB.
+5. Notificações em tempo real são enviadas para os clientes via Socket.io.
+
+## 🚀 Resumo da Arquitetura
+
+```mermaid
+graph TD;
+    Node1(TTGO T-Beam) -->|LoRa| Gateway(TTGO LoRa32);
+    Node2(TTGO T-Beam) -->|LoRa| Gateway;
+    Gateway -->|MQTT| Broker(Eclipse Mosquitto);
+    Broker -->|API REST| Backend(Node.js);
+    Backend -->|Armazena| DB(MongoDB);
+    Backend -->|Notificações| Cliente(Socket.io);
+```
+
+## 🛠️ Tecnologias e Componentes Utilizadas (Geral)
+
+### Tecnologias
 
 - **Backend**:
 
@@ -65,19 +81,30 @@ O **Gateway** é responsável por receber os dados dos Nodes e encaminhá-los pa
   - **LoRa** para transmissão entre Nodes e Gateway
   - **MQTT** para envio de dados do Gateway ao servidor
 
----
+### Componentes
 
-## 🚀 Resumo da Arquitetura
+1. **Dispositivos TTGO T-Beam**:
 
-```mermaid
-graph TD;
-    Node1(TTGO T-Beam) -->|LoRa| Gateway(TTGO LoRa32);
-    Node2(TTGO T-Beam) -->|LoRa| Gateway;
-    Gateway -->|MQTT| Broker(Eclipse Mosquitto);
-    Broker -->|API REST| Backend(Node.js);
-    Backend -->|Armazena| DB(MongoDB);
-    Backend -->|Notificações| Cliente(Socket.io);
-```
+   - 🌍 Enviam dados de localização via **LoRa**.
+
+2. **Gateway TTGO LoRa32**:
+
+   - 🔗 Recebe os dados dos dispositivos e os retransmite para o broker.
+
+3. **Broker MQTT (Eclipse Mosquitto)**:
+
+   - 📥 Intermediário que recebe mensagens do gateway e as distribui para o backend.
+
+4. **Backend (Node.js)**:
+
+   - ⚙️ Processa dados, armazena informações em um banco de dados e envia notificações em tempo real.
+
+5. **Banco de Dados (MongoDB)**:
+
+   - 💾 Armazena os dados de rastreamento de forma estruturada.
+
+6. **Cliente (Socket.io)**:
+   - 📲 Recebe notificações em tempo real sobre a localização dos bois.
 
 ## Índice
 
@@ -102,29 +129,24 @@ graph TD;
 9. [Considerações Finais](#considerações-finais)
 10. [Recursos Adicionais](#recursos-adicionais)
 
----
-
-## Funcionalidades
+## Funcionalidades (API REST)
 
 - **Registro e Login de Usuários:** Criação e autenticação de usuários utilizando JWT.
 - **API REST Segura:** Endpoints protegidos para acessar status, dados e publicar mensagens.
 - **Comunicação MQTT Segura:** MQTT sobre TLS/SSL com autenticação de clientes via certificados.
 - **Notificações em Tempo Real:** Utiliza Socket.io para enviar eventos em tempo real para clientes conectados.
-- **Monitoramento e Gerenciamento com PM2:** Gerencia o processo Node.js e oferece monitoramento.
 - **Backups Automatizados do MongoDB:** Realiza backups periódicos do banco de dados.
 - **Documentação com Swagger:** Documentação interativa da API disponível via Swagger UI.
 - **Testes Automatizados com Jest:** Testes automatizados para garantir a qualidade do código.
 
-## Tecnologias Utilizadas
+## Tecnologias Utilizadas (API REST)
 
 - **Node.js & Express:** Backend da aplicação.
-- **Python & Flask:** Alternativa para gerenciamento adicional do servidor.
 - **Eclipse Mosquitto:** Broker MQTT.
 - **MongoDB & Mongoose:** Banco de dados e ORM.
 - **Socket.io:** Comunicação em tempo real.
 - **JWT:** Autenticação segura.
 - **Swagger:** Documentação da API.
-- **PM2:** Gerenciamento de processos.
 - **Jest & Supertest:** Testes automatizados.
 - **OpenSSL:** Geração de certificados SSL.
 
@@ -250,7 +272,7 @@ Para garantir que apenas dispositivos autorizados possam se conectar ao broker M
 
 ## Configuração do TLS/SSL
 
-Para garantir comunicações seguras, é necessário configurar TLS/SSL tanto no broker Mosquitto quanto no servidor Node.js/Python.
+Para garantir comunicações seguras, é necessário configurar TLS/SSL tanto no broker Mosquitto quanto no servidor Node.js.
 
 1. **Gerar Certificados SSL:**
 
@@ -275,7 +297,7 @@ Para garantir comunicações seguras, é necessário configurar TLS/SSL tanto no
 
    Substitua `C:\Path\To\` pelo caminho real onde os certificados foram salvos.
 
-3. **Configurar o Servidor Node.js/Python para Usar TLS/SSL:**
+3. **Configurar o Servidor Node.js para Usar TLS/SSL:**
 
    Assegure-se de que tanto o cliente MQTT quanto a API REST utilizem os certificados gerados para estabelecer conexões seguras.
 
@@ -409,12 +431,9 @@ GET /data?topic=ttgo/device1/data
 ## Recursos Adicionais
 
 - **Documentação do Mosquitto:** [https://mosquitto.org/documentation/](https://mosquitto.org/documentation/)
-- **Documentação do Paho-MQTT:** [https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php](https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php)
-- **Documentação do Flask:** [https://flask.palletsprojects.com/](https://flask.palletsprojects.com/)
 - **Documentação do MongoDB:** [https://docs.mongodb.com/](https://docs.mongodb.com/)
 - **Arduino Libraries:**
   - [PubSubClient](https://pubsubclient.knolleary.net/)
   - [ArduinoJson](https://arduinojson.org/)
-- **PM2 Documentation:** [https://pm2.keymetrics.io/docs/usage/quick-start/](https://pm2.keymetrics.io/docs/usage/quick-start/)
 - **Swagger Documentation:** [https://swagger.io/docs/](https://swagger.io/docs/)
 - **Socket.io Documentation:** [https://socket.io/docs/](https://socket.io/docs/)
