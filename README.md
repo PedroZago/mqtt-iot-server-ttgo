@@ -129,7 +129,7 @@ graph TD;
 9. [Considerações Finais](#considerações-finais)
 10. [Recursos Adicionais](#recursos-adicionais)
 
-## Funcionalidades (API REST)
+## Funcionalidades
 
 - **Registro e Login de Usuários:** Criação e autenticação de usuários utilizando JWT.
 - **API REST Segura:** Endpoints protegidos para acessar status, dados e publicar mensagens.
@@ -139,7 +139,7 @@ graph TD;
 - **Documentação com Swagger:** Documentação interativa da API disponível via Swagger UI.
 - **Testes Automatizados com Jest:** Testes automatizados para garantir a qualidade do código.
 
-## Tecnologias Utilizadas (API REST)
+## Tecnologias Utilizadas
 
 - **Node.js & Express:** Backend da aplicação.
 - **Eclipse Mosquitto:** Broker MQTT.
@@ -424,8 +424,6 @@ GET /data?topic=ttgo/device1/data
 
 ### Boas Práticas de Desenvolvimento
 
-- **Versionamento de Código:** Utilize sistemas de controle de versão como Git para gerenciar o código-fonte.
-- **Documentação:** Mantenha a documentação atualizada para facilitar a manutenção e onboarding de novos desenvolvedores.
 - **Testes Automatizados:** Expanda os testes automatizados para cobrir mais funcionalidades e garantir a robustez da aplicação.
 
 ## Recursos Adicionais
