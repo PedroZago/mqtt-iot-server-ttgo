@@ -1,0 +1,36 @@
+{
+  "name": "mqtt-iot-server-ttgo",
+  "version": "1.0.0",
+  "description": "Servidor MQTT para rastreamento e monitoramento de bovinos",
+  "repository": "git@github.com:PedroZago/mqtt-iot-server-ttgo.git",
+  "author": "Pedro de Camargo Zago <pedro.camargozago@hotmail.com.br>",
+  "license": "MIT",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-basic-auth": "^1.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.7.1",
+    "morgan": "^1.10.0",
+    "mqtt": "^5.10.1",
+    "socket.io": "^4.8.0",
+    "winston": "^3.15.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/mongoose": "^5.11.97",
+    "@types/morgan": "^1.9.9",
+    "@types/mqtt": "^2.5.0",
+    "@types/node": "^22.7.5",
+    "@types/socket.io": "^3.0.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}

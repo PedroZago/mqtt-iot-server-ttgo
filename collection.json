@@ -1,0 +1,191 @@
+{
+  "info": {
+    "name": "API IoT",
+    "description": "Coleção de endpoints para a API IoT",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Autenticação",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"user\", \"password\": \"password\"}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Registrar Usuário",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"newuser\", \"password\": \"newpassword\"}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["register"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dados IoT",
+      "item": [
+        {
+          "name": "Publicar Dado IoT",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <token_jwt>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"topic\": \"ttgo/device1/data\", \"message\": {\"temperatura\": 25, \"frequencia\": 80, \"latitude\": -23.5505, \"longitude\": -46.6333}}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/dados-iot",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["dados-iot"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obter Todos os Dados IoT",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <token_jwt>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/dados-iot",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["dados-iot"],
+              "query": [
+                {
+                  "key": "topic",
+                  "value": "topic"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obter Dado IoT por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <token_jwt>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/dados-iot/<id>",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["dados-iot", "<id>"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Dado IoT",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <token_jwt>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"topic\": \"ttgo/device1/data\", \"message\": {\"temperatura\": 25, \"frequencia\": 80, \"latitude\": -23.5505, \"longitude\": -46.6333}}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/dados-iot/<id>",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["dados-iot", "<id>"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deletar Dado IoT",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <token_jwt>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/dados-iot/<id>",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["dados-iot", "<id>"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -405,8 +405,7 @@ GET /data?topic=ttgo/device1/data
 
 2. **Escalabilidade:**
 
-   - **Banco de Dados:** MongoDB é adequado para muitos casos, mas para grandes volumes de dados, considere otimizações como índices ou bancos de dados alternativos.
-   - **Broker MQTT:** Para um grande número de dispositivos, brokers como EMQX ou HiveMQ podem oferecer melhor desempenho e escalabilidade.
+   - **Banco de Dados:** MongoDB é adequado para muitos casos, mas para grandes volumes de dados, considere otimizações como índices.
 
 3. **Monitoramento e Logs:**
 
