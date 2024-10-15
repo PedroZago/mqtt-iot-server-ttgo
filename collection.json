@@ -24,11 +24,11 @@
               "raw": "{\"username\": \"user\", \"password\": \"password\"}"
             },
             "url": {
-              "raw": "http://localhost:5000/login",
+              "raw": "http://localhost:5000/api/auth/login",
               "protocol": "http",
               "host": ["localhost"],
               "port": "5000",
-              "path": ["login"]
+              "path": ["api", "auth", "login"]
             }
           },
           "response": []
@@ -49,11 +49,11 @@
               "raw": "{\"username\": \"newuser\", \"password\": \"newpassword\"}"
             },
             "url": {
-              "raw": "http://localhost:5000/register",
+              "raw": "http://localhost:5000/api/auth/register",
               "protocol": "http",
               "host": ["localhost"],
               "port": "5000",
-              "path": ["register"]
+              "path": ["api", "auth", "register"]
             }
           },
           "response": []
@@ -82,11 +82,11 @@
               "raw": "{\"topic\": \"ttgo/device1/data\", \"message\": {\"temperatura\": 25, \"frequencia\": 80, \"latitude\": -23.5505, \"longitude\": -46.6333}}"
             },
             "url": {
-              "raw": "http://localhost:5000/dados-iot",
+              "raw": "http://localhost:5000/api/iot",
               "protocol": "http",
               "host": ["localhost"],
               "port": "5000",
-              "path": ["dados-iot"]
+              "path": ["api", "iot"]
             }
           },
           "response": []
@@ -102,11 +102,11 @@
               }
             ],
             "url": {
-              "raw": "http://localhost:5000/dados-iot",
+              "raw": "http://localhost:5000/api/iot?topic=topic",
               "protocol": "http",
               "host": ["localhost"],
               "port": "5000",
-              "path": ["dados-iot"],
+              "path": ["api", "iot"],
               "query": [
                 {
                   "key": "topic",
@@ -128,11 +128,11 @@
               }
             ],
             "url": {
-              "raw": "http://localhost:5000/dados-iot/<id>",
+              "raw": "http://localhost:5000/api/iot/<id>",
               "protocol": "http",
               "host": ["localhost"],
               "port": "5000",
-              "path": ["dados-iot", "<id>"]
+              "path": ["api", "iot", "<id>"]
             }
           },
           "response": []
@@ -156,11 +156,11 @@
               "raw": "{\"topic\": \"ttgo/device1/data\", \"message\": {\"temperatura\": 25, \"frequencia\": 80, \"latitude\": -23.5505, \"longitude\": -46.6333}}"
             },
             "url": {
-              "raw": "http://localhost:5000/dados-iot/<id>",
+              "raw": "http://localhost:5000/api/iot/<id>",
               "protocol": "http",
               "host": ["localhost"],
               "port": "5000",
-              "path": ["dados-iot", "<id>"]
+              "path": ["api", "iot", "<id>"]
             }
           },
           "response": []
@@ -176,11 +176,11 @@
               }
             ],
             "url": {
-              "raw": "http://localhost:5000/dados-iot/<id>",
+              "raw": "http://localhost:5000/api/iot/<id>",
               "protocol": "http",
               "host": ["localhost"],
               "port": "5000",
-              "path": ["dados-iot", "<id>"]
+              "path": ["api", "iot", "<id>"]
             }
           },
           "response": []
