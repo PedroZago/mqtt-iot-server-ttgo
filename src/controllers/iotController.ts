@@ -22,47 +22,47 @@ export const getStatus = async (_: Request, res: Response): Promise<void> => {
   res.json({ status: "Server is running" });
 };
 
-export const createData = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const { topic, message } = req.body as IIotData;
+// export const createData = async (
+//   req: Request,
+//   res: Response
+// ): Promise<void> => {
+//   try {
+//     const { topic, message } = req.body as IIotData;
 
-    if (!topic || !message || typeof message !== "object") {
-      res.status(400).json({
-        status: "error",
-        message:
-          "Dados inválidos. O tópico e a mensagem devem ser fornecidos, e a mensagem deve ser um objeto JSON.",
-      });
-      return;
-    }
+//     if (!topic || !message || typeof message !== "object") {
+//       res.status(400).json({
+//         status: "error",
+//         message:
+//           "Dados inválidos. O tópico e a mensagem devem ser fornecidos, e a mensagem deve ser um objeto JSON.",
+//       });
+//       return;
+//     }
 
-    const finalMessage = { ...message, clientId: process.env.CLIENT_ID };
+//     const finalMessage = { ...message, clientId: process.env.CLIENT_ID };
 
-    const payload = JSON.stringify(finalMessage);
+//     const payload = JSON.stringify(finalMessage);
 
-    mqttClient.publish(topic, payload, async (err) => {
-      if (err) {
-        console.error("Erro ao publicar mensagem:", err);
-        return res
-          .status(500)
-          .json({ status: "error", message: "Falha ao publicar mensagem" });
-      }
+//     mqttClient.publish(topic, payload, async (err) => {
+//       if (err) {
+//         console.error("Erro ao publicar mensagem:", err);
+//         return res
+//           .status(500)
+//           .json({ status: "error", message: "Falha ao publicar mensagem" });
+//       }
 
-      console.log(`Mensagem publicada no tópico ${topic}:`, finalMessage);
+//       console.log(`Mensagem publicada no tópico ${topic}:`, finalMessage);
 
-      res.status(201).json({
-        message: "Dado IoT publicado com sucesso.",
-        payload: { topic, message },
-      });
-    });
-  } catch (err: any) {
-    console.error("Erro ao publicar dado IoT:", err);
-    logger.error(`Erro ao publicar dado IoT: ${err.message}`);
-    res.status(500).json({ message: "Internal server error." });
-  }
-};
+//       res.status(201).json({
+//         message: "Dado IoT publicado com sucesso.",
+//         payload: { topic, message },
+//       });
+//     });
+//   } catch (err: any) {
+//     console.error("Erro ao publicar dado IoT:", err);
+//     logger.error(`Erro ao publicar dado IoT: ${err.message}`);
+//     res.status(500).json({ message: "Internal server error." });
+//   }
+// };
 
 // // Rota para obter dados IoT
 // app.get("/dados-iot", authenticateJWT, async (req, res) => {

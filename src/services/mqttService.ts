@@ -10,11 +10,11 @@ export const initMqttService = (io: Server): void => {
       `Broker: ${process.env.MQTT_BROKER}, Port: ${process.env.MQTT_PORT}, Client ID: ${process.env.CLIENT_ID}`
     );
 
-    mqttClient.subscribe("ttgo/+/data", (err) => {
+    mqttClient.subscribe("seu/topico/aqui", (err) => {
       if (err) {
         logger.error(`Error subscribing to topic: ${err.message}`);
       } else {
-        logger.info('Subscribed to topic "ttgo/+/data"');
+        logger.info('Subscribed to topic "seu/topico/aqui"');
       }
     });
   });

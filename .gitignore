@@ -54,4 +54,5 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
-passwd
+# Mosquitto
+passwords.txt
