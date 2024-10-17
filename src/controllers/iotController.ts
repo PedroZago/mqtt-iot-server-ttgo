@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IotData, IIotData } from "../models/IotData";
+import { IotData, IIotData } from "../models/IotDataModel";
 import { logger } from "../config/logger";
 import { mqttClient } from "../config/mqtt";
 

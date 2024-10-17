@@ -1,25 +1,42 @@
-import { Model, DataTypes } from "sequelize";
-import sequelize from "../database";
-import { SpeciesModel } from "./SpeciesModel";
+import { Model, DataTypes, Optional } from "sequelize";
+import sequelizeConnection from "../config/database";
+import Species from "./SpeciesModel";
 
-export class AnimalModel extends Model {
+interface AnimalAttributes {
+  id: number;
+  name: string;
+  speciesId: number;
+  breed?: string;
+  birthDate?: Date;
+  weight?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date | null;
+}
+
+interface AnimalCreationModel extends Optional<AnimalAttributes, "id"> {}
+
+class Animal
+  extends Model<AnimalAttributes, AnimalCreationModel>
+  implements AnimalAttributes
+{
   public id!: number;
-  public tag_id!: string;
   public name!: string;
   public speciesId!: number;
   public breed?: string;
-  public age?: number;
+  public birthDate?: Date;
   public weight?: number;
-  public health_status?: string;
-  public additional_info?: any;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+  public readonly deletedAt!: Date | null;
 }
 
-AnimalModel.init(
+Animal.init(
   {
-    tag_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
     name: {
       type: DataTypes.STRING,
@@ -29,32 +46,42 @@ AnimalModel.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: SpeciesModel,
+        model: Species,
         key: "id",
       },
     },
     breed: {
       type: DataTypes.STRING,
     },
-    age: {
-      type: DataTypes.INTEGER,
+    birthDate: {
+      type: DataTypes.DATE,
     },
     weight: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.NUMBER,
     },
-    health_status: {
-      type: DataTypes.STRING,
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
-    additional_info: {
-      type: DataTypes.JSONB,
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {
-    sequelize,
-    modelName: "Animal",
+    sequelize: sequelizeConnection,
     tableName: "Animals",
+    paranoid: true,
     timestamps: true,
   }
 );
 
-AnimalModel.belongsTo(SpeciesModel, { foreignKey: "speciesId" });
+Animal.belongsTo(Species, { foreignKey: "speciesId", as: "species" });
+
+export default Animal;

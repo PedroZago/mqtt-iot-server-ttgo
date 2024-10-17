@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 import express, { json, Request, Response } from "express";
 import cors from "cors";
-import connectDB from "./config/database";
 import authRouter from "./routes/authRoutes";
 import iotRoutes from "./routes/iotRoutes";
 import { logger } from "./config/logger";
@@ -11,6 +10,7 @@ import { Server } from "socket.io";
 import { errorHandler } from "./middlewares/errorHandler";
 import { requestLogger } from "./middlewares/requestLogger";
 import helmet from "helmet";
+import sequelize from "./config/database";
 
 dotenv.config();
 
@@ -38,8 +38,6 @@ app.get("/api/health", (_: Request, res: Response) => {
 
 initMqttService(io);
 
-connectDB();
-
 io.on("connection", (socket) => {
   logger.info("New client connected");
 
@@ -50,8 +48,18 @@ io.on("connection", (socket) => {
 
 app.use(errorHandler);
 
+async function testDbConnection() {
+  try {
+    await sequelize.authenticate();
+    console.log("Connection has been established successfully.");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
+}
+
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
+  await testDbConnection();
   logger.info(`Server running on port ${PORT}`);
 });
 
