@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 import express, { json, Request, Response } from "express";
 import cors from "cors";
-import authRouter from "./routes/authRoutes";
-import iotRoutes from "./routes/iotRoutes";
+// import authRouter from "./routes/authRoutes";
+// import iotRoutes from "./routes/iotRoutes";
 import { logger } from "./config/logger";
 import { createServer } from "http";
 import { initMqttService } from "./services/mqttService";
@@ -29,8 +29,8 @@ app.use(cors(corsOptions));
 app.use(json());
 app.use(requestLogger);
 
-app.use("/api/auth", authRouter);
-app.use("/api/iot", iotRoutes);
+// app.use("/api/auth", authRouter);
+// app.use("/api/iot", iotRoutes);
 
 app.get("/api/health", (_: Request, res: Response) => {
   res.status(200).send("Server is running.");
