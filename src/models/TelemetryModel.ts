@@ -2,8 +2,7 @@ import { Model, DataTypes, Optional, Sequelize } from "sequelize";
 import sequelizeConnection from "../config/database";
 import Device from "./DeviceModel";
 
-interface TelemetryAttributes {
-  id: number;
+export interface TelemetryData {
   topic: string;
   message: {
     temperature: number;
@@ -12,6 +11,10 @@ interface TelemetryAttributes {
     longitude: number;
   };
   deviceId: number;
+}
+
+export interface TelemetryAttributes extends TelemetryData {
+  id: number;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;

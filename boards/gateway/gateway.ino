@@ -1,142 +1,69 @@
-#include <SPI.h>
-#include <LoRa.h>
 #include <WiFi.h>
-#include <PubSubClient.h>
-#include <queue>
+#include <WiFiUdp.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>  // Biblioteca para o display OLED
 
-// Configurações de rede
-const char *ssid = "Desktop_F5364807";
-const char *password = "5071032903032618";
+#define SCREEN_WIDTH 128  // Largura do display OLED
+#define SCREEN_HEIGHT 64  // Altura do display OLED
+#define OLED_RESET    -1  // Reset do OLED (não é necessário para algumas placas)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-// Configurações do broker MQTT
-const char *mqtt_server = "192.168.1.11"; // IP do broker MQTT
-const int mqtt_port = 1883;               // Porta do broker MQTT
+const char *ssid = "Desktop_F5364807";     // Nome da rede WiFi
+const char *password = "5071032903032618"; // Senha da rede WiFi
 
-// Parâmetros do LoRa
-#define LORA_BAND 915E6
+WiFiUDP udp;
+const int gatewayPort = 1234;  // Porta onde vai escutar as mensagens
 
-WiFiClient espClient;
-PubSubClient client(espClient);
-
-// Fila de mensagens com limite
-std::queue<String> messageQueue;
-const int MAX_QUEUE_SIZE = 50; // Limite da fila de mensagens
-
-// Função para conectar ao Wi-Fi
-void setup_wifi()
-{
-  Serial.print("Conectando à rede: ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(1000);
-    Serial.println("Conectando ao WiFi...");
-  }
-
-  Serial.println();
-  Serial.println("Conectado à rede WiFi!");
-  Serial.print("Endereço IP: ");
-  Serial.println(WiFi.localIP());
-}
-
-// Função para reconectar ao broker MQTT
-void reconnect_mqtt_server()
-{
-  while (!client.connected())
-  {
-    Serial.println("Conectando ao broker MQTT...");
-    if (client.connect("gatewayNode"))
-    {
-      Serial.println("Conectado ao MQTT.");
-    }
-    else
-    {
-      Serial.print("Falha ao conectar. Código: ");
-      Serial.print(client.state());
-      Serial.println(" tentando novamente em 5 segundos");
-      delay(5000);
-    }
-  }
-}
-
-// Função para processar mensagens
-void processMessages()
-{
-  if (!messageQueue.empty())
-  {
-    String messageToSend = messageQueue.front();
-    messageQueue.pop(); // Remover a mensagem da fila
-
-    // Enviar mensagem via MQTT
-    if (client.connected())
-    {
-      if (client.publish("node/messages", messageToSend.c_str()))
-      {
-        Serial.println("Mensagem enviada via MQTT: " + messageToSend);
-      }
-      else
-      {
-        Serial.println("Falha ao enviar a mensagem via MQTT.");
-        // Caso falhe, podemos adicionar a mensagem novamente à fila
-        messageQueue.push(messageToSend);
-      }
-    }
-    else
-    {
-      Serial.println("Conexão MQTT perdida. Tentando reconectar...");
-      reconnect_mqtt_server();
-    }
-  }
-}
-
-void setup()
-{
+void setup() {
   Serial.begin(115200);
 
-  setup_wifi();
-
-  client.setServer(mqtt_server, mqtt_port); // Define o broker MQTT
-  reconnect_mqtt_server();
-
-  // Iniciar LoRa
-  if (!LoRa.begin(LORA_BAND))
-  {
-    Serial.println("Falha ao iniciar o LoRa!");
-    while (1)
-      ;
+  // Inicializa o display OLED
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {  // Endereço I2C do OLED (0x3C)
+    Serial.println(F("Falha ao inicializar o display OLED"));
+    while (true);  // Fica em loop infinito se não inicializar
   }
+  
+  display.clearDisplay();
+  display.setTextSize(1);      // Tamanho do texto (1 é o padrão)
+  display.setTextColor(SSD1306_WHITE); // Cor do texto
 
-  Serial.println("Gateway iniciado e pronto.");
+  // Conectando ao Wi-Fi
+  WiFi.begin(ssid, password);
+  display.setCursor(0, 0);  // Define posição do cursor no OLED
+  display.print("Conectando ao Wi-Fi...");
+  display.display();  // Atualiza o display
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Conectando ao Wi-Fi...");
+  }
+  Serial.println("Conectado ao Wi-Fi");
+
+  // Mostra o IP no Serial e no OLED
+  String ipAddress = WiFi.localIP().toString();
+  Serial.println("IP do ESP32: " + ipAddress);
+
+  // Exibe o IP no OLED
+  display.clearDisplay();
+  display.setCursor(0, 0);
+  display.println("Conectado ao Wi-Fi");
+  display.setCursor(0, 20);
+  display.print("IP: ");
+  display.print(ipAddress);
+  display.display();  // Atualiza o display
+
+  udp.begin(gatewayPort);
 }
 
-void loop()
-{
-  // Verificar se há pacotes LoRa disponíveis
-  int packetSize = LoRa.parsePacket();
-  if (packetSize)
-  {
-    String incomingMessage = "";
-    while (LoRa.available())
-    {
-      incomingMessage += (char)LoRa.read();
+void loop() {
+  int packetSize = udp.parsePacket();
+  if (packetSize) {
+    char incomingPacket[255];
+    int len = udp.read(incomingPacket, 255);
+    if (len > 0) {
+      incomingPacket[len] = 0;
     }
-
-    // Adicionar mensagem à fila com limite
-    if (messageQueue.size() < MAX_QUEUE_SIZE)
-    {
-      messageQueue.push(incomingMessage);
-      Serial.println("Mensagem recebida via LoRa: " + incomingMessage);
-    }
-    else
-    {
-      Serial.println("Fila de mensagens cheia, descartando mensagem.");
-    }
+    Serial.printf("Recebido do Node: %s\n", incomingPacket);
   }
-
-  // Processar mensagens na fila
-  processMessages();
-
-  client.loop(); // Manter a conexão MQTT ativa
 }

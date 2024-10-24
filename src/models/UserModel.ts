@@ -6,18 +6,22 @@ export enum UserRole {
   ADMIN = "admin",
 }
 
-interface UserAttributes {
-  id: number;
+export interface UserData {
   name: string;
   email: string;
   password: string;
   role: UserRole;
+}
+
+export interface UserAttributes extends UserData {
+  id: number;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
+export interface UserCreationAttributes
+  extends Optional<UserAttributes, "id"> {}
 
 class User
   extends Model<UserAttributes, UserCreationAttributes>

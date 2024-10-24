@@ -12,12 +12,15 @@ export enum DeviceStatus {
   MAINTENANCE = "maintenance",
 }
 
-interface DeviceAttributes {
-  id: number;
+export interface DeviceData {
   serialNumber: string;
   status: DeviceStatus;
   battery_level: number;
   type: DeviceType;
+}
+
+interface DeviceAttributes extends DeviceData {
+  id: number;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;

@@ -4,7 +4,7 @@ import { IUser } from "./models/User";
 declare global {
   namespace Express {
     interface Request {
-      user?: string;
+      user?: any;
     }
   }
 }

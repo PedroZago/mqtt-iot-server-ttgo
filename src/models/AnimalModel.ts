@@ -1,20 +1,23 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import sequelizeConnection from "../config/database";
-import Species from "./SpeciesModel";
+import Specie from "./SpecieModel";
 
-interface AnimalAttributes {
-  id: number;
+export interface AnimalData {
   name: string;
-  speciesId: number;
-  breed?: string;
-  birthDate?: Date;
-  weight?: number;
+  specieId: number;
+  breed: string;
+  birthDate: Date;
+  weight: number;
+}
+
+export interface AnimalAttributes extends AnimalData {
+  id: number;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;
 }
 
-interface AnimalCreationModel extends Optional<AnimalAttributes, "id"> {}
+export interface AnimalCreationModel extends Optional<AnimalAttributes, "id"> {}
 
 class Animal
   extends Model<AnimalAttributes, AnimalCreationModel>
@@ -22,10 +25,10 @@ class Animal
 {
   public id!: number;
   public name!: string;
-  public speciesId!: number;
-  public breed?: string;
-  public birthDate?: Date;
-  public weight?: number;
+  public specieId!: number;
+  public breed!: string;
+  public birthDate!: Date;
+  public weight!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
   public readonly deletedAt!: Date | null;
@@ -42,11 +45,11 @@ Animal.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    speciesId: {
+    specieId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: Species,
+        model: Specie,
         key: "id",
       },
     },
@@ -82,6 +85,6 @@ Animal.init(
   }
 );
 
-Animal.belongsTo(Species, { foreignKey: "speciesId", as: "species" });
+Animal.belongsTo(Specie, { foreignKey: "specieId", as: "specie" });
 
 export default Animal;

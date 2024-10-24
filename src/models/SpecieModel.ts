@@ -1,20 +1,23 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import sequelizeConnection from "../config/database";
 
-interface SpeciesAttributes {
-  id: number;
+export interface SpecieData {
   name: string;
   description?: string;
+}
+
+interface SpecieAttributes extends SpecieData {
+  id: number;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;
 }
 
-interface SpeciesCreationAttributes extends Optional<SpeciesAttributes, "id"> {}
+interface SpecieCreationAttributes extends Optional<SpecieAttributes, "id"> {}
 
-class Species
-  extends Model<SpeciesAttributes, SpeciesCreationAttributes>
-  implements SpeciesAttributes
+class Specie
+  extends Model<SpecieAttributes, SpecieCreationAttributes>
+  implements SpecieAttributes
 {
   public id!: number;
   public name!: string;
@@ -24,7 +27,7 @@ class Species
   public readonly deletedAt!: Date | null;
 }
 
-Species.init(
+Specie.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -55,10 +58,10 @@ Species.init(
   },
   {
     sequelize: sequelizeConnection,
-    tableName: "Species",
+    tableName: "Specie",
     paranoid: true,
     timestamps: true,
   }
 );
 
-export default Species;
+export default Specie;
