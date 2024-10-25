@@ -49,8 +49,6 @@ app.get("/api/health", (_: Request, res: Response) => {
   res.status(200).send("Server is running.");
 });
 
-// initMqttService(io);
-
 io.on("connection", (socket) => {
   logger.info("New client connected");
 
@@ -73,6 +71,7 @@ async function testDbConnection() {
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, async () => {
   await testDbConnection();
+  await sequelize.sync({ force: false });
   logger.info(`Server running on port ${PORT}`);
 });
 

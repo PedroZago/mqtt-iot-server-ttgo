@@ -2,14 +2,16 @@ import { Model, DataTypes, Optional } from "sequelize";
 import sequelizeConnection from "../config/database";
 import Device from "./device.model";
 
+export interface MessageData {
+  temperature: number;
+  heartRate: number;
+  latitude: number;
+  longitude: number;
+}
+
 export interface TelemetryData {
   topic: string;
-  message: {
-    temperature: number;
-    heartRate: number;
-    latitude: number;
-    longitude: number;
-  };
+  message: MessageData;
   deviceId: number;
 }
 
@@ -29,12 +31,7 @@ class Telemetry
 {
   public id!: number;
   public topic!: string;
-  public message!: {
-    temperature: number;
-    heartRate: number;
-    latitude: number;
-    longitude: number;
-  };
+  public message!: MessageData;
   public deviceId!: number;
   public createdAt!: Date;
   public updatedAt!: Date;
@@ -51,6 +48,7 @@ Telemetry.init(
     topic: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: { len: [1, 255] },
     },
     message: {
       type: DataTypes.JSONB,

@@ -6,7 +6,7 @@ import { DeviceStatus } from "../enums/device-status.enum";
 export interface DeviceData {
   serialNumber: string;
   status: DeviceStatus;
-  battery_level: number;
+  batteryLevel: number;
   type: DeviceType;
 }
 
@@ -26,7 +26,7 @@ class Device
   public id!: number;
   public serialNumber!: string;
   public status!: DeviceStatus;
-  public battery_level!: number;
+  public batteryLevel!: number;
   public type!: DeviceType;
   public createdAt!: Date;
   public updatedAt!: Date;
@@ -49,8 +49,8 @@ Device.init(
       allowNull: false,
       defaultValue: DeviceStatus.INACTIVE,
     },
-    battery_level: {
-      type: DataTypes.NUMBER,
+    batteryLevel: {
+      type: DataTypes.INTEGER,
     },
     type: {
       type: DataTypes.ENUM(...Object.values(DeviceType)),

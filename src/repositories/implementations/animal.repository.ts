@@ -6,6 +6,7 @@ import { IAnimalRepository } from "../interfaces/animal.repository.interface";
 
 export class AnimalRepository implements IAnimalRepository {
   async findAll(): Promise<AnimalAttributes[]> {
+    console.log("findAll");
     return Animal.findAll();
   }
 

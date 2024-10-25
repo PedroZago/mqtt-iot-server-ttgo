@@ -37,6 +37,7 @@ Specie.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: { len: [1, 255] },
     },
     description: {
       type: DataTypes.STRING,
@@ -58,7 +59,7 @@ Specie.init(
   },
   {
     sequelize: sequelizeConnection,
-    tableName: "Specie",
+    tableName: "specie",
     paranoid: true,
     timestamps: true,
   }

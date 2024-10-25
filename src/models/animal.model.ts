@@ -44,6 +44,7 @@ Animal.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: { len: [1, 255] },
     },
     specieId: {
       type: DataTypes.INTEGER,
@@ -55,12 +56,13 @@ Animal.init(
     },
     breed: {
       type: DataTypes.STRING,
+      validate: { len: [1, 255] },
     },
     birthDate: {
       type: DataTypes.DATE,
     },
     weight: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.FLOAT,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -79,7 +81,7 @@ Animal.init(
   },
   {
     sequelize: sequelizeConnection,
-    tableName: "Animals",
+    tableName: "animals",
     paranoid: true,
     timestamps: true,
   }
