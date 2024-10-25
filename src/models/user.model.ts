@@ -1,10 +1,6 @@
-import { Model, DataTypes, Optional, Sequelize } from "sequelize";
+import { Model, DataTypes, Optional } from "sequelize";
 import sequelizeConnection from "../config/database";
-
-export enum UserRole {
-  USER = "user",
-  ADMIN = "admin",
-}
+import { UserRole } from "../enums/user-role.enum";
 
 export interface UserData {
   name: string;

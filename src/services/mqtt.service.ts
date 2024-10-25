@@ -1,7 +1,7 @@
 import { logger } from "../config/logger";
 import { Server } from "socket.io";
 import { mqttClient } from "../config/mqtt";
-import Telemetry from "../models/TelemetryModel";
+import Telemetry from "../models/telemetry.model";
 
 export const initMqttService = (io: Server): void => {
   mqttClient.on("connect", () => {

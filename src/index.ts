@@ -1,11 +1,12 @@
 import dotenv from "dotenv";
 import express, { json, Request, Response } from "express";
 import cors from "cors";
-import animalController from "./controllers/animal.controller";
-import authController from "./controllers/auth.controller";
-import deviceController from "./controllers/device.controller";
-import specieController from "./controllers/specie.controller";
-import telemetryController from "./controllers/telemetry.controller";
+import animalRoutes from "./routes/animal.routes";
+import authRoutes from "./routes/auth.routes";
+import userRoutes from "./routes/user.routes";
+import deviceRoutes from "./routes/device.routes";
+import specieRoutes from "./routes/specie.routes";
+import telemetryRoutes from "./routes/telemetry.routes";
 import { logger } from "./config/logger";
 import { createServer } from "http";
 import { initMqttService } from "./services/mqtt.service";
@@ -14,12 +15,16 @@ import { errorHandler } from "./middlewares/errorHandler";
 import { requestLogger } from "./middlewares/requestLogger";
 import helmet from "helmet";
 import sequelize from "./config/database";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+import { swaggerOptions } from "./config/swagger";
 
 dotenv.config();
 
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
+const swaggerDocs = swaggerJSDoc(swaggerOptions);
 
 const corsOptions = {
   origin: process.env.CORS_ORIGIN || "*",
@@ -32,17 +37,19 @@ app.use(cors(corsOptions));
 app.use(json());
 app.use(requestLogger);
 
-app.use("/api/animal", animalController);
-app.use("/api/auth", authController);
-app.use("/api/device", deviceController);
-app.use("/api/specie", specieController);
-app.use("/api/telemetry", telemetryController);
+app.use("/api/animal", animalRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/device", deviceRoutes);
+app.use("/api/specie", specieRoutes);
+app.use("/api/telemetry", telemetryRoutes);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get("/api/health", (_: Request, res: Response) => {
   res.status(200).send("Server is running.");
 });
 
-initMqttService(io);
+// initMqttService(io);
 
 io.on("connection", (socket) => {
   logger.info("New client connected");

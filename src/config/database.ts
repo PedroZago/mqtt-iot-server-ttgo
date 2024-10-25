@@ -7,12 +7,12 @@ const dbConfig = config[env];
 export const sequelize = new Sequelize(
   dbConfig.database,
   dbConfig.username,
-  dbConfig.password,
+  String(dbConfig.password),
   {
     host: dbConfig.host,
     dialect: dbConfig.dialect,
     port: dbConfig.port,
-    logging: true,
+    logging: console.log,
     dialectModule: dbConfig.dialectModule,
   }
 );

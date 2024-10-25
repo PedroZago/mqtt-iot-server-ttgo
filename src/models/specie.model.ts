@@ -1,40 +1,33 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import sequelizeConnection from "../config/database";
-import Specie from "./SpecieModel";
 
-export interface AnimalData {
+export interface SpecieData {
   name: string;
-  specieId: number;
-  breed: string;
-  birthDate: Date;
-  weight: number;
+  description?: string;
 }
 
-export interface AnimalAttributes extends AnimalData {
+export interface SpecieAttributes extends SpecieData {
   id: number;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;
 }
 
-export interface AnimalCreationModel extends Optional<AnimalAttributes, "id"> {}
+interface SpecieCreationAttributes extends Optional<SpecieAttributes, "id"> {}
 
-class Animal
-  extends Model<AnimalAttributes, AnimalCreationModel>
-  implements AnimalAttributes
+class Specie
+  extends Model<SpecieAttributes, SpecieCreationAttributes>
+  implements SpecieAttributes
 {
   public id!: number;
   public name!: string;
-  public specieId!: number;
-  public breed!: string;
-  public birthDate!: Date;
-  public weight!: number;
+  public description?: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
   public readonly deletedAt!: Date | null;
 }
 
-Animal.init(
+Specie.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -45,22 +38,8 @@ Animal.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    specieId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: Specie,
-        key: "id",
-      },
-    },
-    breed: {
+    description: {
       type: DataTypes.STRING,
-    },
-    birthDate: {
-      type: DataTypes.DATE,
-    },
-    weight: {
-      type: DataTypes.NUMBER,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -79,12 +58,10 @@ Animal.init(
   },
   {
     sequelize: sequelizeConnection,
-    tableName: "Animals",
+    tableName: "Specie",
     paranoid: true,
     timestamps: true,
   }
 );
 
-Animal.belongsTo(Specie, { foreignKey: "specieId", as: "specie" });
-
-export default Animal;
+export default Specie;

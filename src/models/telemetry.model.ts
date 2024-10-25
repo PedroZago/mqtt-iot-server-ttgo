@@ -1,6 +1,6 @@
-import { Model, DataTypes, Optional, Sequelize } from "sequelize";
+import { Model, DataTypes, Optional } from "sequelize";
 import sequelizeConnection from "../config/database";
-import Device from "./DeviceModel";
+import Device from "./device.model";
 
 export interface TelemetryData {
   topic: string;

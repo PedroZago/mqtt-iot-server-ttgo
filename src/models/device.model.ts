@@ -1,16 +1,7 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import sequelizeConnection from "../config/database";
-
-export enum DeviceType {
-  NODE = "node",
-  GATEWAY = "gateway",
-}
-
-export enum DeviceStatus {
-  ACTIVE = "active",
-  INACTIVE = "inactive",
-  MAINTENANCE = "maintenance",
-}
+import { DeviceType } from "../enums/device-type.enum";
+import { DeviceStatus } from "../enums/device-status.enum";
 
 export interface DeviceData {
   serialNumber: string;
@@ -19,7 +10,7 @@ export interface DeviceData {
   type: DeviceType;
 }
 
-interface DeviceAttributes extends DeviceData {
+export interface DeviceAttributes extends DeviceData {
   id: number;
   createdAt?: Date;
   updatedAt?: Date;
