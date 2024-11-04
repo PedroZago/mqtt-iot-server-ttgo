@@ -4,11 +4,24 @@ import { logger } from "../config/logger";
 import { UserRole } from "../enums/user-role.enum";
 import jwt from "jsonwebtoken";
 
-export const register = async (req: Request, res: Response): Promise<void> => {
-  const { name, password, email } = req.body as UserCreationAttributes;
+interface UserCreationAttributesWithConfirmPassword
+  extends UserCreationAttributes {
+  confirmPassword: string;
+}
 
-  if (!name || !password || !email) {
+export const register = async (req: Request, res: Response): Promise<void> => {
+  const { name, password, email, confirmPassword } =
+    req.body as UserCreationAttributesWithConfirmPassword;
+
+  if (!name || !password || !email || !confirmPassword) {
     res.status(400).json({ message: "Nome, e-mail e senha são obrigatórios." });
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    res
+      .status(400)
+      .json({ message: "A confirmação de senha não corresponde." });
     return;
   }
 
@@ -54,7 +67,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       }
     );
 
-    res.status(200).send({ accessToken });
+    res.status(200).send({ accessToken, user });
   } catch (error) {
     logger.error(
       `Erro ao fazer login: ${

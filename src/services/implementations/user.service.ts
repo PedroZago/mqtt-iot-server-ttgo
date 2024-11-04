@@ -14,7 +14,7 @@ export class UserService implements IUserService {
     return this.userRepository.findAll();
   }
 
-  async getUserById(id: number): Promise<UserAttributes | null> {
+  async getUserById(id: string): Promise<UserAttributes | null> {
     return this.userRepository.findById(id);
   }
 
@@ -23,14 +23,14 @@ export class UserService implements IUserService {
   }
 
   async updateUser(
-    id: number,
+    id: string,
     userData: UserData
   ): Promise<UserAttributes | null> {
     return this.userRepository.update(id, userData);
   }
 
   async updatePassword(
-    id: number,
+    id: string,
     oldPassword: string,
     newPassword: string
   ): Promise<void> {
@@ -42,7 +42,7 @@ export class UserService implements IUserService {
   }
 
   async updateUserRole(
-    id: number,
+    id: string,
     currentUserRole: UserRole,
     newRole: UserRole
   ): Promise<void> {
@@ -62,7 +62,7 @@ export class UserService implements IUserService {
     await this.userRepository.updateUserRole(id, newRole);
   }
 
-  async deleteUser(id: number): Promise<void> {
+  async deleteUser(id: string): Promise<void> {
     return this.userRepository.delete(id);
   }
 }

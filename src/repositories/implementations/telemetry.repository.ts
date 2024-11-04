@@ -9,7 +9,7 @@ export class TelemetryRepository implements ITelemetryRepository {
     return Telemetry.findAll();
   }
 
-  async findById(id: number): Promise<TelemetryAttributes | null> {
+  async findById(id: string): Promise<TelemetryAttributes | null> {
     return Telemetry.findByPk(id);
   }
 
@@ -18,7 +18,7 @@ export class TelemetryRepository implements ITelemetryRepository {
   }
 
   async update(
-    id: number,
+    id: string,
     TelemetryData: TelemetryData
   ): Promise<TelemetryAttributes | null> {
     const telemetry = await Telemetry.findByPk(id);
@@ -28,7 +28,7 @@ export class TelemetryRepository implements ITelemetryRepository {
     return null;
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     const telemetry = await Telemetry.findByPk(id);
     if (telemetry) {
       await telemetry.destroy();

@@ -7,7 +7,7 @@ export class UserRepository implements IUserRepository {
     return User.findAll();
   }
 
-  async findById(id: number): Promise<UserAttributes | null> {
+  async findById(id: string): Promise<UserAttributes | null> {
     return User.findByPk(id);
   }
 
@@ -15,7 +15,7 @@ export class UserRepository implements IUserRepository {
     return User.create(userData);
   }
 
-  async update(id: number, userData: UserData): Promise<UserAttributes | null> {
+  async update(id: string, userData: UserData): Promise<UserAttributes | null> {
     const user = await User.findByPk(id);
     if (user) {
       return user.update(userData);
@@ -23,7 +23,7 @@ export class UserRepository implements IUserRepository {
     return null;
   }
 
-  async updatePassword(id: number, newPassword: string): Promise<void> {
+  async updatePassword(id: string, newPassword: string): Promise<void> {
     const user = await User.findByPk(id);
     if (user) {
       user.password = newPassword;
@@ -31,7 +31,7 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async updateUserRole(id: number, newRole: UserRole): Promise<void> {
+  async updateUserRole(id: string, newRole: UserRole): Promise<void> {
     const user = await User.findByPk(id);
     if (user) {
       user.role = newRole;
@@ -39,7 +39,7 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     const user = await User.findByPk(id);
     if (user) {
       await user.destroy();

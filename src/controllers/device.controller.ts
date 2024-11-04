@@ -25,9 +25,7 @@ export class DeviceController {
 
   async getDeviceById(req: Request, res: Response): Promise<Response> {
     try {
-      const device = await this.deviceService.getDeviceById(
-        Number(req.params.id)
-      );
+      const device = await this.deviceService.getDeviceById(req.params.id);
       return res.status(200).json(device);
     } catch (error) {
       if (error instanceof Error) {
@@ -52,7 +50,7 @@ export class DeviceController {
   async updateDevice(req: Request, res: Response): Promise<Response> {
     try {
       const updatedDevice = await this.deviceService.updateDevice(
-        Number(req.params.id),
+        req.params.id,
         req.body
       );
       return res.status(200).json(updatedDevice);
@@ -66,7 +64,7 @@ export class DeviceController {
 
   async deleteDevice(req: Request, res: Response): Promise<Response> {
     try {
-      await this.deviceService.deleteDevice(Number(req.params.id));
+      await this.deviceService.deleteDevice(req.params.id);
       return res.status(204).send();
     } catch (error) {
       if (error instanceof Error) {

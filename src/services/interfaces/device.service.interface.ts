@@ -2,11 +2,11 @@ import { DeviceData, DeviceAttributes } from "../../models/device.model";
 
 export interface IDeviceService {
   getAllDevices(): Promise<DeviceAttributes[]>;
-  getDeviceById(id: number): Promise<DeviceAttributes | null>;
+  getDeviceById(id: string): Promise<DeviceAttributes | null>;
   createDevice(DeviceData: DeviceData): Promise<DeviceAttributes>;
   updateDevice(
-    id: number,
+    id: string,
     DeviceData: DeviceData
   ): Promise<DeviceAttributes | null>;
-  deleteDevice(id: number): Promise<void>;
+  deleteDevice(id: string): Promise<void>;
 }

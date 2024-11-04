@@ -10,10 +10,7 @@ export interface UserData {
 }
 
 export interface UserAttributes extends UserData {
-  id: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date | null;
+  id: string;
 }
 
 export interface UserCreationAttributes
@@ -23,21 +20,18 @@ class User
   extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes
 {
-  public id!: number;
+  public id!: string;
   public name!: string;
   public email!: string;
   public password!: string;
   public role!: UserRole;
-  public createdAt!: Date;
-  public updatedAt!: Date;
-  public deletedAt!: Date | null;
 }
 
 User.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     name: {
@@ -60,18 +54,6 @@ User.init(
       type: DataTypes.ENUM(...Object.values(UserRole)),
       allowNull: false,
       defaultValue: UserRole.USER,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    deletedAt: {
-      type: DataTypes.DATE,
-      allowNull: true,
     },
   },
   {

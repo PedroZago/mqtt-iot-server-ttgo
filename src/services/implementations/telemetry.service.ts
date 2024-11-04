@@ -16,7 +16,7 @@ export class TelemetryService implements ITelemetryService {
     return this.TelemetryRepository.findAll();
   }
 
-  async getTelemetryById(id: number): Promise<TelemetryAttributes | null> {
+  async getTelemetryById(id: string): Promise<TelemetryAttributes | null> {
     return this.TelemetryRepository.findById(id);
   }
 
@@ -27,13 +27,13 @@ export class TelemetryService implements ITelemetryService {
   }
 
   async updateTelemetry(
-    id: number,
+    id: string,
     TelemetryData: TelemetryData
   ): Promise<TelemetryAttributes | null> {
     return this.TelemetryRepository.update(id, TelemetryData);
   }
 
-  async deleteTelemetry(id: number): Promise<void> {
+  async deleteTelemetry(id: string): Promise<void> {
     return this.TelemetryRepository.delete(id);
   }
 }

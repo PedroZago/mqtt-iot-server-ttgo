@@ -29,6 +29,45 @@ router.get("/", async (req: Request, res: Response) => {
 
 /**
  * @swagger
+ * /api/user/me:
+ *   get:
+ *     summary: Retorna as informações do usuário autenticado
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Usuário encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID do usuário
+ *                 name:
+ *                   type: string
+ *                   description: Nome do usuário
+ *                 email:
+ *                   type: string
+ *                   description: E-mail do usuário
+ *                 role:
+ *                   type: string
+ *                   description: Cargo ou papel do usuário
+ *       401:
+ *         description: Não autorizado - Token inválido ou ausente
+ *       404:
+ *         description: Usuário não encontrado
+ *       500:
+ *         description: Erro ao obter usuário
+ */
+router.get("/me", async (req: Request, res: Response) => {
+  await userController.getMe(req, res);
+});
+
+/**
+ * @swagger
  * /api/user/{id}:
  *   get:
  *     summary: Retorna um usuário pelo ID

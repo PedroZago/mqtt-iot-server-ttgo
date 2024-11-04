@@ -2,16 +2,34 @@ import Animal, {
   AnimalData,
   AnimalAttributes,
 } from "../../models/animal.model";
+import Specie from "../../models/specie.model";
 import { IAnimalRepository } from "../interfaces/animal.repository.interface";
 
 export class AnimalRepository implements IAnimalRepository {
-  async findAll(): Promise<AnimalAttributes[]> {
-    console.log("findAll");
-    return Animal.findAll();
+  async findAll(limit: number, offset: number): Promise<AnimalAttributes[]> {
+    return Animal.findAll({
+      include: [
+        {
+          model: Specie,
+          as: "specie",
+          attributes: ["id", "name"],
+        },
+      ],
+      limit,
+      offset,
+    });
   }
 
-  async findById(id: number): Promise<AnimalAttributes | null> {
-    return Animal.findByPk(id);
+  async findById(id: string): Promise<AnimalAttributes | null> {
+    return Animal.findByPk(id, {
+      include: [
+        {
+          model: Specie,
+          as: "specie",
+          attributes: ["id", "name"],
+        },
+      ],
+    });
   }
 
   async create(AnimalData: AnimalData): Promise<AnimalAttributes> {
@@ -19,7 +37,7 @@ export class AnimalRepository implements IAnimalRepository {
   }
 
   async update(
-    id: number,
+    id: string,
     AnimalData: AnimalData
   ): Promise<AnimalAttributes | null> {
     const animal = await Animal.findByPk(id);
@@ -29,7 +47,7 @@ export class AnimalRepository implements IAnimalRepository {
     return null;
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     const animal = await Animal.findByPk(id);
     if (animal) {
       await animal.destroy();

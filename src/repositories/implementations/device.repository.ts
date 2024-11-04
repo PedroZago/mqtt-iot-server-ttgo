@@ -9,7 +9,7 @@ export class DeviceRepository implements IDeviceRepository {
     return Device.findAll();
   }
 
-  async findById(id: number): Promise<DeviceAttributes | null> {
+  async findById(id: string): Promise<DeviceAttributes | null> {
     return Device.findByPk(id);
   }
 
@@ -18,7 +18,7 @@ export class DeviceRepository implements IDeviceRepository {
   }
 
   async update(
-    id: number,
+    id: string,
     DeviceData: DeviceData
   ): Promise<DeviceAttributes | null> {
     const device = await Device.findByPk(id);
@@ -28,7 +28,7 @@ export class DeviceRepository implements IDeviceRepository {
     return null;
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     const device = await Device.findByPk(id);
     if (device) {
       await device.destroy();

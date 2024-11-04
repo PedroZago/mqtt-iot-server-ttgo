@@ -27,7 +27,7 @@ export const initMqttService = (io: Server): void => {
   mqttClient.on("message", async (topic, message: any) => {
     try {
       const parsedMessage = JSON.parse(message.toString());
-      const deviceId: number = parsedMessage.deviceId;
+      const deviceid: string = parsedMessage.deviceId;
       delete parsedMessage.deviceId;
 
       const finalMessage = {

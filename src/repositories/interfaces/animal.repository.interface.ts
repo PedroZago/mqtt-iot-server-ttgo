@@ -1,9 +1,9 @@
 import { AnimalData, AnimalAttributes } from "../../models/animal.model";
 
 export interface IAnimalRepository {
-  findAll(): Promise<AnimalAttributes[]>;
-  findById(id: number): Promise<AnimalAttributes | null>;
+  findAll(limit: number, offset: number): Promise<AnimalAttributes[]>;
+  findById(id: string): Promise<AnimalAttributes | null>;
   create(AnimalData: AnimalData): Promise<AnimalAttributes>;
-  update(id: number, AnimalData: AnimalData): Promise<AnimalAttributes | null>;
-  delete(id: number): Promise<void>;
+  update(id: string, AnimalData: AnimalData): Promise<AnimalAttributes | null>;
+  delete(id: string): Promise<void>;
 }

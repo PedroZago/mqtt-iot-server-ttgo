@@ -5,11 +5,11 @@ import {
 
 export interface ITelemetryRepository {
   findAll(): Promise<TelemetryAttributes[]>;
-  findById(id: number): Promise<TelemetryAttributes | null>;
+  findById(id: string): Promise<TelemetryAttributes | null>;
   create(TelemetryData: TelemetryData): Promise<TelemetryAttributes>;
   update(
-    id: number,
+    id: string,
     TelemetryData: TelemetryData
   ): Promise<TelemetryAttributes | null>;
-  delete(id: number): Promise<void>;
+  delete(id: string): Promise<void>;
 }

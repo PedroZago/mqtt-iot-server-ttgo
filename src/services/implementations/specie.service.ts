@@ -13,7 +13,7 @@ export class SpecieService implements ISpecieService {
     return this.SpecieRepository.findAll();
   }
 
-  async getSpecieById(id: number): Promise<SpecieAttributes | null> {
+  async getSpecieById(id: string): Promise<SpecieAttributes | null> {
     return this.SpecieRepository.findById(id);
   }
 
@@ -22,13 +22,13 @@ export class SpecieService implements ISpecieService {
   }
 
   async updateSpecie(
-    id: number,
+    id: string,
     SpecieData: SpecieData
   ): Promise<SpecieAttributes | null> {
     return this.SpecieRepository.update(id, SpecieData);
   }
 
-  async deleteSpecie(id: number): Promise<void> {
+  async deleteSpecie(id: string): Promise<void> {
     return this.SpecieRepository.delete(id);
   }
 }

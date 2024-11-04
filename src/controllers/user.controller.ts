@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
 import { IUserService } from "../services/interfaces/user.service.interface";
 import { UserService } from "../services/implementations/user.service";
 import { UserRepository } from "../repositories/implementations/user.repository";
+import { UserAttributes } from "../models/user.model";
 
 export class UserController {
   private userService: IUserService;
@@ -25,10 +27,39 @@ export class UserController {
 
   async getUserById(req: Request, res: Response): Promise<Response> {
     try {
-      const user = await this.userService.getUserById(Number(req.params.id));
+      const user = await this.userService.getUserById(req.params.id);
       return res.status(200).json(user);
     } catch (error) {
       if (error instanceof Error) {
+        return res.status(500).json({ message: error.message });
+      }
+      return res.status(500).json({ message: "An unknown error occurred" });
+    }
+  }
+
+  async getMe(req: Request, res: Response): Promise<Response> {
+    try {
+      const accessToken = req.headers.authorization?.split(" ")[1];
+
+      if (!accessToken) {
+        return res.status(401).json({ message: "Token não fornecido." });
+      }
+
+      const decoded = jwt.verify(
+        accessToken,
+        process.env.JWT_SECRET || ""
+      ) as UserAttributes;
+
+      const userId = decoded.id;
+      console.log(userId);
+
+      const user = await this.userService.getUserById(userId);
+
+      return res.status(200).json(user);
+    } catch (error) {
+      if (error instanceof jwt.JsonWebTokenError) {
+        return res.status(401).json({ message: "Token inválido." });
+      } else if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
       }
       return res.status(500).json({ message: "An unknown error occurred" });
@@ -50,7 +81,7 @@ export class UserController {
   async updateUser(req: Request, res: Response): Promise<Response> {
     try {
       const updatedUser = await this.userService.updateUser(
-        Number(req.params.id),
+        req.params.id,
         req.body
       );
       return res.status(200).json(updatedUser);
@@ -66,7 +97,7 @@ export class UserController {
     try {
       await this.userService.updatePassword(
         // @ts-ignore
-        Number(req.user.id),
+        req.user.id,
         req.body.oldPassword,
         req.body.newPassword
       );
@@ -82,7 +113,7 @@ export class UserController {
   async updateUserRole(req: Request, res: Response): Promise<Response> {
     try {
       await this.userService.updateUserRole(
-        Number(req.body.id),
+        req.body.id,
         // @ts-ignore
         req.user?.role,
         req.body.newRole
@@ -100,7 +131,7 @@ export class UserController {
 
   async deleteUser(req: Request, res: Response): Promise<Response> {
     try {
-      await this.userService.deleteUser(Number(req.params.id));
+      await this.userService.deleteUser(req.params.id);
       return res.status(204).send();
     } catch (error) {
       if (error instanceof Error) {

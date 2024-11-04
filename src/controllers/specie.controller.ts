@@ -25,9 +25,7 @@ export class SpecieController {
 
   async getSpecieById(req: Request, res: Response): Promise<Response> {
     try {
-      const specie = await this.specieService.getSpecieById(
-        Number(req.params.id)
-      );
+      const specie = await this.specieService.getSpecieById(req.params.id);
       return res.status(200).json(specie);
     } catch (error) {
       if (error instanceof Error) {
@@ -52,7 +50,7 @@ export class SpecieController {
   async updateSpecie(req: Request, res: Response): Promise<Response> {
     try {
       const updatedSpecie = await this.specieService.updateSpecie(
-        Number(req.params.id),
+        req.params.id,
         req.body
       );
       return res.status(200).json(updatedSpecie);
@@ -66,7 +64,7 @@ export class SpecieController {
 
   async deleteSpecie(req: Request, res: Response): Promise<Response> {
     try {
-      await this.specieService.deleteSpecie(Number(req.params.id));
+      await this.specieService.deleteSpecie(req.params.id);
       return res.status(204).send();
     } catch (error) {
       if (error instanceof Error) {

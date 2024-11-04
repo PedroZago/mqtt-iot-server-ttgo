@@ -4,17 +4,14 @@ import Specie from "./specie.model";
 
 export interface AnimalData {
   name: string;
-  specieId: number;
-  breed: string;
-  birthDate: Date;
-  weight: number;
+  specieId: string;
+  breed?: string;
+  birthDate?: Date;
+  weight?: number;
 }
 
 export interface AnimalAttributes extends AnimalData {
-  id: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date | null;
+  id: string;
 }
 
 export interface AnimalCreationModel extends Optional<AnimalAttributes, "id"> {}
@@ -23,22 +20,19 @@ class Animal
   extends Model<AnimalAttributes, AnimalCreationModel>
   implements AnimalAttributes
 {
-  public id!: number;
+  public id!: string;
   public name!: string;
-  public specieId!: number;
-  public breed!: string;
-  public birthDate!: Date;
-  public weight!: number;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
-  public readonly deletedAt!: Date | null;
+  public specieId!: string;
+  public breed?: string;
+  public birthDate?: Date;
+  public weight?: number;
 }
 
 Animal.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     name: {
@@ -47,7 +41,7 @@ Animal.init(
       validate: { len: [1, 255] },
     },
     specieId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: Specie,
@@ -56,37 +50,32 @@ Animal.init(
     },
     breed: {
       type: DataTypes.STRING,
+      allowNull: true,
       validate: { len: [1, 255] },
     },
     birthDate: {
       type: DataTypes.DATE,
+      allowNull: true,
     },
     weight: {
       type: DataTypes.FLOAT,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    deletedAt: {
-      type: DataTypes.DATE,
       allowNull: true,
+      validate: { min: 0 },
     },
   },
   {
     sequelize: sequelizeConnection,
     tableName: "animals",
-    paranoid: true,
     timestamps: true,
+    paranoid: true,
   }
 );
 
 Animal.belongsTo(Specie, { foreignKey: "specieId", as: "specie" });
+Specie.hasMany(Animal, {
+  foreignKey: "specieId",
+  sourceKey: "id",
+  as: "animals",
+});
 
 export default Animal;

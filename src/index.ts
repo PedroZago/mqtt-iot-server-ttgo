@@ -7,6 +7,7 @@ import userRoutes from "./routes/user.routes";
 import deviceRoutes from "./routes/device.routes";
 import specieRoutes from "./routes/specie.routes";
 import telemetryRoutes from "./routes/telemetry.routes";
+import notificationRoutes from "./routes/notification.routes";
 import { logger } from "./config/logger";
 import { createServer } from "http";
 import { initMqttService } from "./services/mqtt.service";
@@ -18,6 +19,7 @@ import sequelize from "./config/database";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { swaggerOptions } from "./config/swagger";
+import { authMiddleware } from "./middlewares/authMiddleware";
 
 dotenv.config();
 
@@ -27,7 +29,7 @@ const io = new Server(server);
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || "*",
+  origin: process.env.CORS_ORIGIN,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
@@ -37,12 +39,13 @@ app.use(cors(corsOptions));
 app.use(json());
 app.use(requestLogger);
 
-app.use("/api/animal", animalRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/device", deviceRoutes);
-app.use("/api/specie", specieRoutes);
-app.use("/api/telemetry", telemetryRoutes);
+app.use("/api/animals", authMiddleware, animalRoutes);
+app.use("/api/users", authMiddleware, userRoutes);
+app.use("/api/devices", authMiddleware, deviceRoutes);
+app.use("/api/species", authMiddleware, specieRoutes);
+app.use("/api/telemetries", authMiddleware, telemetryRoutes);
+app.use("/api/notifications", authMiddleware, notificationRoutes);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get("/api/health", (_: Request, res: Response) => {
@@ -71,7 +74,7 @@ async function testDbConnection() {
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, async () => {
   await testDbConnection();
-  await sequelize.sync({ force: false });
+  // await sequelize.sync({ force: true });
   logger.info(`Server running on port ${PORT}`);
 });
 

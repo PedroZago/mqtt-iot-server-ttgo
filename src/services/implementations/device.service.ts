@@ -13,7 +13,7 @@ export class DeviceService implements IDeviceService {
     return this.DeviceRepository.findAll();
   }
 
-  async getDeviceById(id: number): Promise<DeviceAttributes | null> {
+  async getDeviceById(id: string): Promise<DeviceAttributes | null> {
     return this.DeviceRepository.findById(id);
   }
 
@@ -22,13 +22,13 @@ export class DeviceService implements IDeviceService {
   }
 
   async updateDevice(
-    id: number,
+    id: string,
     DeviceData: DeviceData
   ): Promise<DeviceAttributes | null> {
     return this.DeviceRepository.update(id, DeviceData);
   }
 
-  async deleteDevice(id: number): Promise<void> {
+  async deleteDevice(id: string): Promise<void> {
     return this.DeviceRepository.delete(id);
   }
 }

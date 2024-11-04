@@ -9,7 +9,7 @@ export class SpecieRepository implements ISpecieRepository {
     return Specie.findAll();
   }
 
-  async findById(id: number): Promise<SpecieAttributes | null> {
+  async findById(id: string): Promise<SpecieAttributes | null> {
     return Specie.findByPk(id);
   }
 
@@ -18,7 +18,7 @@ export class SpecieRepository implements ISpecieRepository {
   }
 
   async update(
-    id: number,
+    id: string,
     SpecieData: SpecieData
   ): Promise<SpecieAttributes | null> {
     const specie = await Specie.findByPk(id);
@@ -28,7 +28,7 @@ export class SpecieRepository implements ISpecieRepository {
     return null;
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     const specie = await Specie.findByPk(id);
     if (specie) {
       await specie.destroy();

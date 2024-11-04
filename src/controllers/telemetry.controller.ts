@@ -26,7 +26,7 @@ export class TelemetryController {
   async getTelemetryById(req: Request, res: Response): Promise<Response> {
     try {
       const telemetry = await this.telemetryService.getTelemetryById(
-        Number(req.params.id)
+        req.params.id
       );
       return res.status(200).json(telemetry);
     } catch (error) {
@@ -54,7 +54,7 @@ export class TelemetryController {
   async updateTelemetry(req: Request, res: Response): Promise<Response> {
     try {
       const updatedTelemetry = await this.telemetryService.updateTelemetry(
-        Number(req.params.id),
+        req.params.id,
         req.body
       );
       return res.status(200).json(updatedTelemetry);
@@ -68,7 +68,7 @@ export class TelemetryController {
 
   async deleteTelemetry(req: Request, res: Response): Promise<Response> {
     try {
-      await this.telemetryService.deleteTelemetry(Number(req.params.id));
+      await this.telemetryService.deleteTelemetry(req.params.id);
       return res.status(204).send();
     } catch (error) {
       if (error instanceof Error) {

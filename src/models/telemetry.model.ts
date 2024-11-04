@@ -5,21 +5,21 @@ import Device from "./device.model";
 export interface MessageData {
   temperature: number;
   heartRate: number;
+  behavior: string;
   latitude: number;
   longitude: number;
+  altitude: number;
+  speed: number;
 }
 
 export interface TelemetryData {
   topic: string;
   message: MessageData;
-  deviceId: number;
+  deviceId: string;
 }
 
 export interface TelemetryAttributes extends TelemetryData {
-  id: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date | null;
+  id: string;
 }
 
 interface TelemetryCreationAttributes
@@ -29,20 +29,17 @@ class Telemetry
   extends Model<TelemetryAttributes, TelemetryCreationAttributes>
   implements TelemetryAttributes
 {
-  public id!: number;
+  public id!: string;
   public topic!: string;
   public message!: MessageData;
-  public deviceId!: number;
-  public createdAt!: Date;
-  public updatedAt!: Date;
-  public deletedAt!: Date | null;
+  public deviceId!: string;
 }
 
 Telemetry.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     topic: {
@@ -55,29 +52,17 @@ Telemetry.init(
       allowNull: false,
     },
     deviceId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: Device,
         key: "id",
       },
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    deletedAt: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
   },
   {
     sequelize: sequelizeConnection,
-    tableName: "telemetry",
+    tableName: "telemetries",
     timestamps: true,
     paranoid: true,
   }
@@ -86,6 +71,11 @@ Telemetry.init(
 Telemetry.belongsTo(Device, {
   foreignKey: "deviceId",
   as: "device",
+});
+Device.hasMany(Telemetry, {
+  foreignKey: "deviceId",
+  sourceKey: "id",
+  as: "telemetries",
 });
 
 export default Telemetry;

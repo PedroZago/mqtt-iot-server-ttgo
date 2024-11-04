@@ -5,11 +5,11 @@ import {
 
 export interface ITelemetryService {
   getAllTelemetries(): Promise<TelemetryAttributes[]>;
-  getTelemetryById(id: number): Promise<TelemetryAttributes | null>;
+  getTelemetryById(id: string): Promise<TelemetryAttributes | null>;
   createTelemetry(TelemetryData: TelemetryData): Promise<TelemetryAttributes>;
   updateTelemetry(
-    id: number,
+    id: string,
     TelemetryData: TelemetryData
   ): Promise<TelemetryAttributes | null>;
-  deleteTelemetry(id: number): Promise<void>;
+  deleteTelemetry(id: string): Promise<void>;
 }

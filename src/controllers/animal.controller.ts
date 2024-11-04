@@ -11,9 +11,12 @@ export class AnimalController {
     this.animalService = new AnimalService(animalRepository);
   }
 
-  async getAllAnimals(_req: Request, res: Response): Promise<Response> {
+  async getAllAnimals(req: Request, res: Response): Promise<Response> {
     try {
-      const animals = await this.animalService.getAllAnimals();
+      const limit = parseInt(req.query.limit as string) || 10;
+      const offset = parseInt(req.query.offset as string) || 0;
+
+      const animals = await this.animalService.getAllAnimals(limit, offset);
       return res.status(200).json(animals);
     } catch (error) {
       if (error instanceof Error) {
@@ -25,9 +28,7 @@ export class AnimalController {
 
   async getAnimalById(req: Request, res: Response): Promise<Response> {
     try {
-      const animal = await this.animalService.getAnimalById(
-        Number(req.params.id)
-      );
+      const animal = await this.animalService.getAnimalById(req.params.id);
       return res.status(200).json(animal);
     } catch (error) {
       if (error instanceof Error) {
@@ -52,7 +53,7 @@ export class AnimalController {
   async updateAnimal(req: Request, res: Response): Promise<Response> {
     try {
       const updatedAnimal = await this.animalService.updateAnimal(
-        Number(req.params.id),
+        req.params.id,
         req.body
       );
       return res.status(200).json(updatedAnimal);
@@ -66,7 +67,7 @@ export class AnimalController {
 
   async deleteAnimal(req: Request, res: Response): Promise<Response> {
     try {
-      await this.animalService.deleteAnimal(Number(req.params.id));
+      await this.animalService.deleteAnimal(req.params.id);
       return res.status(204).send();
     } catch (error) {
       if (error instanceof Error) {
