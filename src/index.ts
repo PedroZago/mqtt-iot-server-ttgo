@@ -74,7 +74,7 @@ async function testDbConnection() {
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, async () => {
   await testDbConnection();
-  // await sequelize.sync({ force: true });
+  await sequelize.sync({ force: true });
   logger.info(`Server running on port ${PORT}`);
 });
 

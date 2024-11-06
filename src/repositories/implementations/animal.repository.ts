@@ -32,17 +32,17 @@ export class AnimalRepository implements IAnimalRepository {
     });
   }
 
-  async create(AnimalData: AnimalData): Promise<AnimalAttributes> {
-    return Animal.create(AnimalData);
+  async create(animalData: AnimalData): Promise<AnimalAttributes> {
+    return Animal.create(animalData);
   }
 
   async update(
     id: string,
-    AnimalData: AnimalData
+    animalData: AnimalData
   ): Promise<AnimalAttributes | null> {
     const animal = await Animal.findByPk(id);
     if (animal) {
-      return animal.update(AnimalData);
+      return animal.update(animalData);
     }
     return null;
   }

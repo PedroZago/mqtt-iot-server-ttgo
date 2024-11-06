@@ -15,18 +15,18 @@ export class NotificationRepository implements INotificationRepository {
   }
 
   async create(
-    NotificationData: NotificationData
+    notificationData: NotificationData
   ): Promise<NotificationAttributes> {
-    return Notification.create(NotificationData);
+    return Notification.create(notificationData);
   }
 
   async update(
     id: string,
-    NotificationData: NotificationData
+    notificationData: NotificationData
   ): Promise<NotificationAttributes | null> {
     const notification = await Notification.findByPk(id);
     if (notification) {
-      return notification.update(NotificationData);
+      return notification.update(notificationData);
     }
     return null;
   }

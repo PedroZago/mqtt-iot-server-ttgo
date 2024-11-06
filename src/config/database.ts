@@ -1,4 +1,4 @@
-import config from "../../database/config";
+const config = require("../../database/config");
 import { Sequelize } from "sequelize";
 
 const env = (process.env.NODE_ENV || "development") as keyof typeof config;

@@ -1,13 +1,16 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import sequelizeConnection from "../config/database";
 import Specie from "./specie.model";
+import Breed from "./breed.model";
+import { AnimalSex } from "../enums/animal-sex.enum";
 
 export interface AnimalData {
   name: string;
   specieId: string;
-  breed?: string;
-  birthDate?: Date;
-  weight?: number;
+  breedId: string;
+  sex: AnimalSex;
+  birthDate: Date;
+  weight: number;
 }
 
 export interface AnimalAttributes extends AnimalData {
@@ -23,9 +26,10 @@ class Animal
   public id!: string;
   public name!: string;
   public specieId!: string;
-  public breed?: string;
-  public birthDate?: Date;
-  public weight?: number;
+  public breedId!: string;
+  public sex!: AnimalSex;
+  public birthDate!: Date;
+  public weight!: number;
 }
 
 Animal.init(
@@ -48,18 +52,30 @@ Animal.init(
         key: "id",
       },
     },
-    breed: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      validate: { len: [1, 255] },
+    breedId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: Breed,
+        key: "id",
+      },
+    },
+    sex: {
+      type: DataTypes.ENUM(...Object.values(AnimalSex)),
+      allowNull: false,
+      defaultValue: AnimalSex.OTHER,
     },
     birthDate: {
       type: DataTypes.DATE,
-      allowNull: true,
+      allowNull: false,
+      validate: {
+        isDate: true,
+        isBefore: new Date().toISOString(),
+      },
     },
     weight: {
       type: DataTypes.FLOAT,
-      allowNull: true,
+      allowNull: false,
       validate: { min: 0 },
     },
   },
@@ -68,12 +84,24 @@ Animal.init(
     tableName: "animals",
     timestamps: true,
     paranoid: true,
+    getterMethods: {
+      age(): number {
+        return new Date().getFullYear() - this.birthDate.getFullYear();
+      },
+    },
   }
 );
 
 Animal.belongsTo(Specie, { foreignKey: "specieId", as: "specie" });
 Specie.hasMany(Animal, {
   foreignKey: "specieId",
+  sourceKey: "id",
+  as: "animals",
+});
+
+Animal.belongsTo(Breed, { foreignKey: "breedId", as: "breed" });
+Breed.hasMany(Animal, {
+  foreignKey: "breedId",
   sourceKey: "id",
   as: "animals",
 });

@@ -13,17 +13,17 @@ export class TelemetryRepository implements ITelemetryRepository {
     return Telemetry.findByPk(id);
   }
 
-  async create(TelemetryData: TelemetryData): Promise<TelemetryAttributes> {
-    return Telemetry.create(TelemetryData);
+  async create(telemetryData: TelemetryData): Promise<TelemetryAttributes> {
+    return Telemetry.create(telemetryData);
   }
 
   async update(
     id: string,
-    TelemetryData: TelemetryData
+    telemetryData: TelemetryData
   ): Promise<TelemetryAttributes | null> {
     const telemetry = await Telemetry.findByPk(id);
     if (telemetry) {
-      return telemetry.update(TelemetryData);
+      return telemetry.update(telemetryData);
     }
     return null;
   }

@@ -13,17 +13,17 @@ export class SpecieRepository implements ISpecieRepository {
     return Specie.findByPk(id);
   }
 
-  async create(SpecieData: SpecieData): Promise<SpecieAttributes> {
-    return Specie.create(SpecieData);
+  async create(specieData: SpecieData): Promise<SpecieAttributes> {
+    return Specie.create(specieData);
   }
 
   async update(
     id: string,
-    SpecieData: SpecieData
+    specieData: SpecieData
   ): Promise<SpecieAttributes | null> {
     const specie = await Specie.findByPk(id);
     if (specie) {
-      return specie.update(SpecieData);
+      return specie.update(specieData);
     }
     return null;
   }

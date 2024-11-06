@@ -1,23 +1,7 @@
-import dotenv from "dotenv";
-import { Dialect } from "sequelize";
-import pg from "pg";
+const dotenv = require("dotenv");
+const pg = require("pg");
 
 dotenv.config();
-
-interface DbConfig {
-  username: string;
-  password: string;
-  database: string;
-  host: string;
-  dialect: Dialect;
-  port: number;
-  dialectModule: object;
-}
-
-interface Config {
-  development: DbConfig;
-  production: DbConfig;
-}
 
 const requiredEnvVars = [
   "DB_USER",
@@ -26,6 +10,7 @@ const requiredEnvVars = [
   "DB_HOST",
   "DB_PORT",
 ];
+
 requiredEnvVars.forEach((envVar) => {
   if (!process.env[envVar]) {
     console.error(`Missing environment variable: ${envVar}`);
@@ -33,7 +18,7 @@ requiredEnvVars.forEach((envVar) => {
   }
 });
 
-const config: Config = {
+const config = {
   development: {
     username: process.env.DB_USER || "",
     password: process.env.DB_PASSWORD || "",
@@ -54,4 +39,4 @@ const config: Config = {
   },
 };
 
-export default config;
+module.exports = config;
