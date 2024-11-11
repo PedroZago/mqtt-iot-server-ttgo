@@ -2,6 +2,7 @@ import Animal, {
   AnimalData,
   AnimalAttributes,
 } from "../../models/animal.model";
+import Breed from "../../models/breed.model";
 import Specie from "../../models/specie.model";
 import { IAnimalRepository } from "../interfaces/animal.repository.interface";
 
@@ -12,6 +13,11 @@ export class AnimalRepository implements IAnimalRepository {
         {
           model: Specie,
           as: "specie",
+          attributes: ["id", "name"],
+        },
+        {
+          model: Breed,
+          as: "breed",
           attributes: ["id", "name"],
         },
       ],
@@ -26,6 +32,11 @@ export class AnimalRepository implements IAnimalRepository {
         {
           model: Specie,
           as: "specie",
+          attributes: ["id", "name"],
+        },
+        {
+          model: Breed,
+          as: "breed",
           attributes: ["id", "name"],
         },
       ],

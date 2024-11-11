@@ -13,7 +13,7 @@ const deviceController = new DeviceController();
 
 /**
  * @swagger
- * /api/device:
+ * /api/devices:
  *   get:
  *     summary: Retorna todos os dispositivos
  *     tags: [Devices]
@@ -29,7 +29,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/device/{id}:
+ * /api/devices/{id}:
  *   get:
  *     summary: Retorna um dispositivo pelo ID
  *     tags: [Devices]
@@ -54,7 +54,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/device:
+ * /api/devices:
  *   post:
  *     summary: Cria um novo dispositivo
  *     tags: [Devices]
@@ -83,7 +83,7 @@ router.post("/", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/device/{id}:
+ * /api/devices/{id}:
  *   put:
  *     summary: Atualiza um dispositivo pelo ID
  *     tags: [Devices]
@@ -121,7 +121,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/device/{id}:
+ * /api/devices/{id}:
  *   delete:
  *     summary: Remove um dispositivo pelo ID
  *     tags: [Devices]

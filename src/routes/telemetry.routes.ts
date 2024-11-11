@@ -13,7 +13,7 @@ const telemetryController = new TelemetryController();
 
 /**
  * @swagger
- * /api/telemetry:
+ * /api/telemetries:
  *   get:
  *     summary: Retorna todas as telemetrias
  *     tags: [Telemetries]
@@ -29,7 +29,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/telemetry/{id}:
+ * /api/telemetries/{id}:
  *   get:
  *     summary: Retorna uma telemetria pelo ID
  *     tags: [Telemetries]
@@ -54,7 +54,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/telemetry:
+ * /api/telemetries:
  *   post:
  *     summary: Cria uma nova telemetria
  *     tags: [Telemetries]
@@ -84,7 +84,7 @@ router.post("/", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/telemetry/{id}:
+ * /api/telemetries/{id}:
  *   put:
  *     summary: Atualiza uma telemetria pelo ID
  *     tags: [Telemetries]
@@ -123,7 +123,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/telemetry/{id}:
+ * /api/telemetries/{id}:
  *   delete:
  *     summary: Remove uma telemetria pelo ID
  *     tags: [Telemetries]

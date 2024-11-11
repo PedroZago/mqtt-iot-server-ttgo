@@ -20,15 +20,15 @@ export class AnimalService implements IAnimalService {
     return this.AnimalRepository.findById(id);
   }
 
-  async createAnimal(AnimalData: AnimalData): Promise<AnimalAttributes> {
-    return this.AnimalRepository.create(AnimalData);
+  async createAnimal(animalData: AnimalData): Promise<AnimalAttributes> {
+    return this.AnimalRepository.create(animalData);
   }
 
   async updateAnimal(
     id: string,
-    AnimalData: AnimalData
+    animalData: AnimalData
   ): Promise<AnimalAttributes | null> {
-    return this.AnimalRepository.update(id, AnimalData);
+    return this.AnimalRepository.update(id, animalData);
   }
 
   async deleteAnimal(id: string): Promise<void> {

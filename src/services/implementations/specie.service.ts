@@ -17,15 +17,15 @@ export class SpecieService implements ISpecieService {
     return this.SpecieRepository.findById(id);
   }
 
-  async createSpecie(SpecieData: SpecieData): Promise<SpecieAttributes> {
-    return this.SpecieRepository.create(SpecieData);
+  async createSpecie(specieData: SpecieData): Promise<SpecieAttributes> {
+    return this.SpecieRepository.create(specieData);
   }
 
   async updateSpecie(
     id: string,
-    SpecieData: SpecieData
+    specieData: SpecieData
   ): Promise<SpecieAttributes | null> {
-    return this.SpecieRepository.update(id, SpecieData);
+    return this.SpecieRepository.update(id, specieData);
   }
 
   async deleteSpecie(id: string): Promise<void> {

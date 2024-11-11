@@ -13,7 +13,7 @@ const specieController = new SpecieController();
 
 /**
  * @swagger
- * /api/specie:
+ * /api/species:
  *   get:
  *     summary: Retorna todas as espécies
  *     tags: [Species]
@@ -29,7 +29,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/specie/{id}:
+ * /api/species/{id}:
  *   get:
  *     summary: Retorna uma espécie pelo ID
  *     tags: [Species]
@@ -54,7 +54,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/specie:
+ * /api/species:
  *   post:
  *     summary: Cria uma nova espécie
  *     tags: [Species]
@@ -81,7 +81,7 @@ router.post("/", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/specie/{id}:
+ * /api/species/{id}:
  *   put:
  *     summary: Atualiza uma espécie pelo ID
  *     tags: [Species]
@@ -117,7 +117,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/specie/{id}:
+ * /api/species/{id}:
  *   delete:
  *     summary: Remove uma espécie pelo ID
  *     tags: [Species]

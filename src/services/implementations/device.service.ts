@@ -17,15 +17,15 @@ export class DeviceService implements IDeviceService {
     return this.DeviceRepository.findById(id);
   }
 
-  async createDevice(DeviceData: DeviceData): Promise<DeviceAttributes> {
-    return this.DeviceRepository.create(DeviceData);
+  async createDevice(deviceData: DeviceData): Promise<DeviceAttributes> {
+    return this.DeviceRepository.create(deviceData);
   }
 
   async updateDevice(
     id: string,
-    DeviceData: DeviceData
+    deviceData: DeviceData
   ): Promise<DeviceAttributes | null> {
-    return this.DeviceRepository.update(id, DeviceData);
+    return this.DeviceRepository.update(id, deviceData);
   }
 
   async deleteDevice(id: string): Promise<void> {

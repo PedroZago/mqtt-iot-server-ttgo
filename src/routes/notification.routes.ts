@@ -13,7 +13,7 @@ const notificationController = new NotificationController();
 
 /**
  * @swagger
- * /api/notification:
+ * /api/notifications:
  *   get:
  *     summary: Retorna todos os notificações
  *     tags: [Notifications]
@@ -29,7 +29,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/notification/{id}:
+ * /api/notifications/{id}:
  *   get:
  *     summary: Retorna um notification pelo ID
  *     tags: [Notifications]
@@ -54,7 +54,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/notification:
+ * /api/notifications:
  *   post:
  *     summary: Cria um novo notification
  *     tags: [Notifications]
@@ -88,7 +88,7 @@ router.post("/", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/notification/{id}:
+ * /api/notifications/{id}:
  *   put:
  *     summary: Atualiza um notification pelo ID
  *     tags: [Notifications]
@@ -131,7 +131,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/notification/{id}:
+ * /api/notifications/{id}:
  *   delete:
  *     summary: Remove um notification pelo ID
  *     tags: [Notifications]

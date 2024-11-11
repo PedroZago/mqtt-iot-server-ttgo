@@ -13,7 +13,7 @@ const userController = new UserController();
 
 /**
  * @swagger
- * /api/user:
+ * /api/users:
  *   get:
  *     summary: Retorna todos os usuários
  *     tags: [Users]
@@ -29,7 +29,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/user/me:
+ * /api/users/me:
  *   get:
  *     summary: Retorna as informações do usuário autenticado
  *     tags: [Users]
@@ -68,7 +68,7 @@ router.get("/me", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/user/{id}:
+ * /api/users/{id}:
  *   get:
  *     summary: Retorna um usuário pelo ID
  *     tags: [Users]
@@ -93,7 +93,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/user:
+ * /api/users:
  *   post:
  *     summary: Cria um novo usuário
  *     tags: [Users]
@@ -122,7 +122,7 @@ router.post("/", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/user/{id}:
+ * /api/users/{id}:
  *   put:
  *     summary: Atualiza um usuário pelo ID
  *     tags: [Users]
@@ -160,7 +160,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/user/update-password:
+ * /api/users/update-password:
  *   patch:
  *     summary: Atualiza a senha do usuário
  *     tags: [Users]
@@ -189,7 +189,7 @@ router.patch("/update-password", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/user/update-role:
+ * /api/users/update-role:
  *   patch:
  *     summary: Atualiza a função do usuário
  *     tags: [Users]
@@ -218,7 +218,7 @@ router.patch("/update-role", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/user/{id}:
+ * /api/users/{id}:
  *   delete:
  *     summary: Remove um usuário pelo ID
  *     tags: [Users]

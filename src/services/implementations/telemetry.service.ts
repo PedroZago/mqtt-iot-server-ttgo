@@ -21,16 +21,16 @@ export class TelemetryService implements ITelemetryService {
   }
 
   async createTelemetry(
-    TelemetryData: TelemetryData
+    telemetryData: TelemetryData
   ): Promise<TelemetryAttributes> {
-    return this.TelemetryRepository.create(TelemetryData);
+    return this.TelemetryRepository.create(telemetryData);
   }
 
   async updateTelemetry(
     id: string,
-    TelemetryData: TelemetryData
+    telemetryData: TelemetryData
   ): Promise<TelemetryAttributes | null> {
-    return this.TelemetryRepository.update(id, TelemetryData);
+    return this.TelemetryRepository.update(id, telemetryData);
   }
 
   async deleteTelemetry(id: string): Promise<void> {

@@ -5,6 +5,7 @@ import animalRoutes from "./routes/animal.routes";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import deviceRoutes from "./routes/device.routes";
+import breedRoutes from "./routes/breed.routes";
 import specieRoutes from "./routes/specie.routes";
 import telemetryRoutes from "./routes/telemetry.routes";
 import notificationRoutes from "./routes/notification.routes";
@@ -44,6 +45,7 @@ app.use("/api/animals", authMiddleware, animalRoutes);
 app.use("/api/users", authMiddleware, userRoutes);
 app.use("/api/devices", authMiddleware, deviceRoutes);
 app.use("/api/species", authMiddleware, specieRoutes);
+app.use("/api/breeds", authMiddleware, breedRoutes);
 app.use("/api/telemetries", authMiddleware, telemetryRoutes);
 app.use("/api/notifications", authMiddleware, notificationRoutes);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -74,7 +76,7 @@ async function testDbConnection() {
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, async () => {
   await testDbConnection();
-  await sequelize.sync({ force: true });
+  await sequelize.sync({ force: false });
   logger.info(`Server running on port ${PORT}`);
 });
 

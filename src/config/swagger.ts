@@ -13,6 +13,20 @@ export const swaggerOptions: SwaggerOptions = {
         url: "http://localhost:5000",
       },
     ],
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: [
+      {
+        BearerAuth: [],
+      },
+    ],
   },
   apis: ["./src/routes/*.ts"],
 };

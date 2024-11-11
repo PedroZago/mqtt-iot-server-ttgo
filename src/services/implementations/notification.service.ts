@@ -23,16 +23,16 @@ export class NotificationService implements INotificationService {
   }
 
   async createNotification(
-    NotificationData: NotificationData
+    notificationData: NotificationData
   ): Promise<NotificationAttributes> {
-    return this.NotificationRepository.create(NotificationData);
+    return this.NotificationRepository.create(notificationData);
   }
 
   async updateNotification(
     id: string,
-    NotificationData: NotificationData
+    notificationData: NotificationData
   ): Promise<NotificationAttributes | null> {
-    return this.NotificationRepository.update(id, NotificationData);
+    return this.NotificationRepository.update(id, notificationData);
   }
 
   async deleteNotification(id: string): Promise<void> {

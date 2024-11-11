@@ -1,21 +1,21 @@
 import { Router, Request, Response } from "express";
-import { AnimalController } from "../controllers/animal.controller";
+import { BreedController } from "../controllers/breed.controller";
 
 const router = Router();
-const animalController = new AnimalController();
+const breedController = new BreedController();
 
 /**
  * @swagger
  * tags:
- *   name: Animals
- *   description: Gerenciamento de animais
+ *   name: Breeds
+ *   description: Gerenciamento de raças
  */
 
 /**
  * @swagger
  * components:
  *   schemas:
- *     Animal:
+ *     Breed:
  *       type: object
  *       properties:
  *         id:
@@ -24,64 +24,48 @@ const animalController = new AnimalController();
  *           example: "302f8f76-414f-48a0-be8d-d934e8635666"
  *         name:
  *           type: string
- *           example: "Bessie"
- *         specieId:
+ *           example: "Nelore"
+ *         description:
  *           type: string
- *           format: uuid
- *           example: "7b1f46be-9f2b-4a3e-b3a1-90bf7e5a8968"
- *         breedId:
- *           type: string
- *           format: uuid
- *           example: "1c98e8c5-5a6d-4b3a-b5e2-83f9f5d3765f"
- *         sex:
- *           type: string
- *           enum: [MALE, FEMALE, OTHER]
- *           example: "female"
- *         birthDate:
- *           type: string
- *           format: date
- *           example: "2020-05-15"
- *         weight:
- *           type: number
- *           example: 350.5
+ *           example: "Raça de gado bovino originária da Índia"
  */
 
 /**
  * @swagger
- * /api/animals:
+ * /api/breeds:
  *   get:
- *     summary: Retorna todos os animais
- *     tags: [Animals]
+ *     summary: Retorna todas as raças
+ *     tags: [Breeds]
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: Lista de todos os animais
+ *         description: Lista de todas as raças
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Animal'
+ *                 $ref: '#/components/schemas/Breed'
  *       500:
- *         description: Erro ao obter animais
+ *         description: Erro ao obter raças
  */
 router.get("/", async (req: Request, res: Response) => {
-  await animalController.getAllAnimals(req, res);
+  await breedController.getAllBreeds(req, res);
 });
 
 /**
  * @swagger
- * /api/animals/{id}:
+ * /api/breeds/{id}:
  *   get:
- *     summary: Retorna um animal pelo ID
- *     tags: [Animals]
+ *     summary: Retorna uma raça pelo ID
+ *     tags: [Breeds]
  *     security:
  *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
- *         description: UUID do animal
+ *         description: UUID da raça
  *         required: true
  *         schema:
  *           type: string
@@ -89,26 +73,26 @@ router.get("/", async (req: Request, res: Response) => {
  *           example: "302f8f76-414f-48a0-be8d-d934e8635666"
  *     responses:
  *       200:
- *         description: Animal encontrado
+ *         description: Raça encontrada
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Animal'
+ *               $ref: '#/components/schemas/Breed'
  *       404:
- *         description: Animal não encontrado
+ *         description: Raça não encontrada
  *       500:
- *         description: Erro ao obter animal
+ *         description: Erro ao obter raça
  */
 router.get("/:id", async (req: Request, res: Response) => {
-  await animalController.getAnimalById(req, res);
+  await breedController.getBreedById(req, res);
 });
 
 /**
  * @swagger
- * /api/animals:
+ * /api/breeds:
  *   post:
- *     summary: Cria um novo animal
- *     tags: [Animals]
+ *     summary: Cria uma nova raça
+ *     tags: [Breeds]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -116,33 +100,33 @@ router.get("/:id", async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Animal'
+ *             $ref: '#/components/schemas/Breed'
  *     responses:
  *       201:
- *         description: Animal criado com sucesso
+ *         description: Raça criada com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Animal'
+ *               $ref: '#/components/schemas/Breed'
  *       500:
- *         description: Erro ao criar animal
+ *         description: Erro ao criar raça
  */
 router.post("/", async (req: Request, res: Response) => {
-  await animalController.createAnimal(req, res);
+  await breedController.createBreed(req, res);
 });
 
 /**
  * @swagger
- * /api/animals/{id}:
+ * /api/breeds/{id}:
  *   put:
- *     summary: Atualiza um animal pelo ID
- *     tags: [Animals]
+ *     summary: Atualiza uma raça pelo ID
+ *     tags: [Breeds]
  *     security:
  *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
- *         description: UUID do animal
+ *         description: UUID da raça
  *         required: true
  *         schema:
  *           type: string
@@ -153,35 +137,35 @@ router.post("/", async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Animal'
+ *             $ref: '#/components/schemas/Breed'
  *     responses:
  *       200:
- *         description: Animal atualizado com sucesso
+ *         description: Raça atualizada com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Animal'
+ *               $ref: '#/components/schemas/Breed'
  *       404:
- *         description: Animal não encontrado
+ *         description: Raça não encontrada
  *       500:
- *         description: Erro ao atualizar animal
+ *         description: Erro ao atualizar raça
  */
 router.put("/:id", async (req: Request, res: Response) => {
-  await animalController.updateAnimal(req, res);
+  await breedController.updateBreed(req, res);
 });
 
 /**
  * @swagger
- * /api/animals/{id}:
+ * /api/breeds/{id}:
  *   delete:
- *     summary: Remove um animal pelo ID
- *     tags: [Animals]
+ *     summary: Remove uma raça pelo ID
+ *     tags: [Breeds]
  *     security:
  *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
- *         description: UUID do animal
+ *         description: UUID da raça
  *         required: true
  *         schema:
  *           type: string
@@ -189,14 +173,14 @@ router.put("/:id", async (req: Request, res: Response) => {
  *           example: "302f8f76-414f-48a0-be8d-d934e8635666"
  *     responses:
  *       204:
- *         description: Animal removido com sucesso
+ *         description: Raça removida com sucesso
  *       404:
- *         description: Animal não encontrado
+ *         description: Raça não encontrada
  *       500:
- *         description: Erro ao remover animal
+ *         description: Erro ao remover raça
  */
 router.delete("/:id", async (req: Request, res: Response) => {
-  await animalController.deleteAnimal(req, res);
+  await breedController.deleteBreed(req, res);
 });
 
 export default router;
