@@ -13,13 +13,68 @@ const telemetryController = new TelemetryController();
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     Telemetry:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           example: "123e4567-e89b-12d3-a456-426614174000"
+ *         topic:
+ *           type: string
+ *           example: "device/telemetry"
+ *         message:
+ *           type: object
+ *           properties:
+ *             temperature:
+ *               type: number
+ *               example: 37.5
+ *             heartRate:
+ *               type: number
+ *               example: 80
+ *             behavior:
+ *               type: string
+ *               example: "Comportamento normal"
+ *             latitude:
+ *               type: number
+ *               format: float
+ *               example: -23.55052
+ *             longitude:
+ *               type: number
+ *               format: float
+ *               example: -46.633308
+ *             altitude:
+ *               type: number
+ *               format: float
+ *               example: 500
+ *             speed:
+ *               type: number
+ *               example: 10
+ *         deviceId:
+ *           type: string
+ *           format: uuid
+ *           example: "987e6543-e21b-12d3-a456-426614174000"
+ */
+
+/**
+ * @swagger
  * /api/telemetries:
  *   get:
  *     summary: Retorna todas as telemetrias
  *     tags: [Telemetries]
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de todas as telemetrias
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Telemetry'
  *       500:
  *         description: Erro ao obter telemetrias
  */
@@ -33,16 +88,24 @@ router.get("/", async (req: Request, res: Response) => {
  *   get:
  *     summary: Retorna uma telemetria pelo ID
  *     tags: [Telemetries]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
- *         description: ID da telemetria
+ *         description: UUID da telemetria
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: uuid
+ *           example: "123e4567-e89b-12d3-a456-426614174000"
  *     responses:
  *       200:
  *         description: Telemetria encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Telemetry'
  *       404:
  *         description: Telemetria não encontrada
  *       500:
@@ -58,23 +121,21 @@ router.get("/:id", async (req: Request, res: Response) => {
  *   post:
  *     summary: Cria uma nova telemetria
  *     tags: [Telemetries]
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               deviceId:
- *                 type: integer
- *               timestamp:
- *                 type: string
- *                 format: date-time
- *               data:
- *                 type: object
+ *             $ref: '#/components/schemas/Telemetry'
  *     responses:
  *       201:
  *         description: Telemetria criada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Telemetry'
  *       500:
  *         description: Erro ao criar telemetria
  */
@@ -88,30 +149,30 @@ router.post("/", async (req: Request, res: Response) => {
  *   put:
  *     summary: Atualiza uma telemetria pelo ID
  *     tags: [Telemetries]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
- *         description: ID da telemetria
+ *         description: UUID da telemetria
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: uuid
+ *           example: "123e4567-e89b-12d3-a456-426614174000"
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               deviceId:
- *                 type: integer
- *               timestamp:
- *                 type: string
- *                 format: date-time
- *               data:
- *                 type: object
+ *             $ref: '#/components/schemas/Telemetry'
  *     responses:
  *       200:
  *         description: Telemetria atualizada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Telemetry'
  *       404:
  *         description: Telemetria não encontrada
  *       500:
@@ -127,13 +188,17 @@ router.put("/:id", async (req: Request, res: Response) => {
  *   delete:
  *     summary: Remove uma telemetria pelo ID
  *     tags: [Telemetries]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
- *         description: ID da telemetria
+ *         description: UUID da telemetria
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: uuid
+ *           example: "123e4567-e89b-12d3-a456-426614174000"
  *     responses:
  *       204:
  *         description: Telemetria removida com sucesso

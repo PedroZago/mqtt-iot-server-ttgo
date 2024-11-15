@@ -8,6 +8,9 @@ import { IDeviceRepository } from "../interfaces/device.repository.interface";
 export class DeviceRepository implements IDeviceRepository {
   async findAll(): Promise<DeviceAttributes[]> {
     return Device.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "deletedAt"],
+      },
       include: [
         {
           model: Animal,
@@ -25,6 +28,9 @@ export class DeviceRepository implements IDeviceRepository {
 
   async findById(id: string): Promise<DeviceAttributes | null> {
     return Device.findByPk(id, {
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "deletedAt"],
+      },
       include: [
         {
           model: Animal,
@@ -41,7 +47,8 @@ export class DeviceRepository implements IDeviceRepository {
   }
 
   async create(deviceData: DeviceData): Promise<DeviceAttributes> {
-    return Device.create(deviceData);
+    const device = await Device.create(deviceData);
+    return device.get({ plain: true });
   }
 
   async update(
@@ -50,7 +57,8 @@ export class DeviceRepository implements IDeviceRepository {
   ): Promise<DeviceAttributes | null> {
     const device = await Device.findByPk(id);
     if (device) {
-      return device.update(deviceData);
+      await device.update(deviceData);
+      return device.get({ plain: true });
     }
     return null;
   }

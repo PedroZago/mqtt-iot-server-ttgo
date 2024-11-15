@@ -27,6 +27,7 @@ const config = {
     dialect: "postgres",
     port: Number(process.env.DB_PORT) || 5432,
     dialectModule: pg,
+    seederStorage: "sequelize",
   },
   production: {
     username: process.env.DB_USER || "",
@@ -36,6 +37,7 @@ const config = {
     dialect: "postgres",
     port: Number(process.env.DB_PORT) || 5432,
     dialectModule: pg,
+    seederStorage: "sequelize",
   },
 };
 

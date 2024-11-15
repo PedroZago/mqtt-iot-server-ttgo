@@ -9,6 +9,9 @@ import { IAnimalRepository } from "../interfaces/animal.repository.interface";
 export class AnimalRepository implements IAnimalRepository {
   async findAll(limit: number, offset: number): Promise<AnimalAttributes[]> {
     return Animal.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "deletedAt"],
+      },
       include: [
         {
           model: Specie,
@@ -28,6 +31,9 @@ export class AnimalRepository implements IAnimalRepository {
 
   async findById(id: string): Promise<AnimalAttributes | null> {
     return Animal.findByPk(id, {
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "deletedAt"],
+      },
       include: [
         {
           model: Specie,
@@ -44,7 +50,8 @@ export class AnimalRepository implements IAnimalRepository {
   }
 
   async create(animalData: AnimalData): Promise<AnimalAttributes> {
-    return Animal.create(animalData);
+    const animal = await Animal.create(animalData);
+    return animal.get({ plain: true });
   }
 
   async update(
@@ -53,7 +60,8 @@ export class AnimalRepository implements IAnimalRepository {
   ): Promise<AnimalAttributes | null> {
     const animal = await Animal.findByPk(id);
     if (animal) {
-      return animal.update(animalData);
+      await animal.update(animalData);
+      return animal.get({ plain: true });
     }
     return null;
   }

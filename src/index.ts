@@ -16,11 +16,13 @@ import { Server } from "socket.io";
 import { errorHandler } from "./middlewares/errorHandler";
 import { requestLogger } from "./middlewares/requestLogger";
 import helmet from "helmet";
-import sequelize from "./config/database";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { swaggerOptions } from "./config/swagger";
 import { authMiddleware } from "./middlewares/authMiddleware";
+import { testDbConnection } from "./utils/testDbConnection";
+import { runMigrationsAndSeeds } from "./utils/runMigrationsAndSeeds";
+import sequelize from "./config/database";
 
 dotenv.config();
 
@@ -51,39 +53,32 @@ app.use("/api/notifications", authMiddleware, notificationRoutes);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get("/api/health", (_: Request, res: Response) => {
-  res.status(200).send("Server is running.");
+  res.status(200).send("Servidor em execução.");
 });
 
 io.on("connection", (socket) => {
-  logger.info("New client connected");
+  logger.info("Novo cliente conectado.");
 
   socket.on("disconnect", () => {
-    logger.info("Client disconnected");
+    logger.info("Cliente desconectado.");
   });
 });
 
 app.use(errorHandler);
 
-async function testDbConnection() {
-  try {
-    await sequelize.authenticate();
-    console.log("Connection has been established successfully.");
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-  }
-}
-
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, async () => {
+  // await sequelize.sync({ force: false });
   await testDbConnection();
-  await sequelize.sync({ force: false });
-  logger.info(`Server running on port ${PORT}`);
+  // await resetDatabase();
+  // await runMigrationsAndSeeds();
+  logger.info(`Servidor rodando na porta ${PORT}`);
 });
 
 process.on("SIGINT", () => {
-  logger.warn("Shutting down gracefully...");
+  logger.warn("Encerrando servidor de forma graciosa...");
   server.close(() => {
-    logger.warn("Server closed.");
+    logger.warn("Servidor fechado.");
     process.exit(0);
   });
 });

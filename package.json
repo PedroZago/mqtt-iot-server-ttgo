@@ -11,11 +11,11 @@
     "start": "node dist/index.js",
     "start:dev": "nodemon",
     "migration:generate": "npx sequelize-cli migration:generate --name",
-    "migration:up": "npx sequelize-cli db:migrate --config src/config/sequelize-config.js",
-    "migration:down": "npx sequelize-cli db:migrate:undo --config src/config/sequelize-config.js",
+    "migration:up": "npx sequelize-cli db:migrate --config database/config.js",
+    "migration:down": "npx sequelize-cli db:migrate:undo --config database/config.js",
     "seed:generate": "npx sequelize-cli seed:generate --name",
-    "seed:run": "npx sequelize-cli db:seed:all --config src/config/sequelize-config.js",
-    "seed:undo": "npx sequelize-cli db:seed:undo:all --config src/config/sequelize-config.js"
+    "seed:run": "npx sequelize-cli db:seed:all --config database/config.js",
+    "seed:undo": "npx sequelize-cli db:seed:undo:all --config database/config.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

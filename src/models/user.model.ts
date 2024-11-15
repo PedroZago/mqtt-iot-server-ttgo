@@ -1,4 +1,5 @@
 import { Model, DataTypes, Optional } from "sequelize";
+import bcrypt from "bcrypt";
 import sequelizeConnection from "../config/database";
 import { UserRole } from "../enums/user-role.enum";
 
@@ -25,7 +26,13 @@ class User
   public email!: string;
   public password!: string;
   public role!: UserRole;
+
+  public async comparePassword(plainPassword: string): Promise<boolean> {
+    return bcrypt.compare(plainPassword, this.password);
+  }
 }
+
+const SALT_ROUNDS = 10;
 
 User.init(
   {
@@ -61,6 +68,14 @@ User.init(
     tableName: "users",
     timestamps: true,
     paranoid: true,
+    hooks: {
+      async beforeSave(user) {
+        if (user.changed("password")) {
+          const hashedPassword = await bcrypt.hash(user.password, SALT_ROUNDS);
+          user.password = hashedPassword;
+        }
+      },
+    },
   }
 );
 

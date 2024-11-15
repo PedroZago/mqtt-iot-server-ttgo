@@ -13,13 +13,50 @@ const notificationController = new NotificationController();
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     Notification:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           example: "302f8f76-414f-48a0-be8d-d934e8635666"
+ *         title:
+ *           type: string
+ *           example: "Bem-vindo!"
+ *         message:
+ *           type: string
+ *           example: "Seja bem-vindo à nossa plataforma!"
+ *         dateTime:
+ *           type: string
+ *           example: "Seja bem-vindo à nossa plataforma!"
+ *         userId:
+ *           type: string
+ *           format: uuid
+ *           example: "1c98e8c5-5a6d-4b3a-b5e2-83f9f5d3765f"
+ *         read:
+ *           type: boolean
+ *           example: false
+ */
+
+/**
+ * @swagger
  * /api/notifications:
  *   get:
- *     summary: Retorna todos os notificações
+ *     summary: Retorna todas as notificações
  *     tags: [Notifications]
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: Lista de todos os notificações
+ *         description: Lista de todas as notificações
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Notification'
  *       500:
  *         description: Erro ao obter notificações
  */
@@ -31,22 +68,30 @@ router.get("/", async (req: Request, res: Response) => {
  * @swagger
  * /api/notifications/{id}:
  *   get:
- *     summary: Retorna um notification pelo ID
+ *     summary: Retorna uma notificação pelo ID
  *     tags: [Notifications]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
- *         description: ID do notification
+ *         description: UUID da notificação
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: uuid
+ *           example: "302f8f76-414f-48a0-be8d-d934e8635666"
  *     responses:
  *       200:
- *         description: Notification encontrado
+ *         description: Notificação encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Notification'
  *       404:
- *         description: Notification não encontrado
+ *         description: Notificação não encontrada
  *       500:
- *         description: Erro ao obter notification
+ *         description: Erro ao obter notificação
  */
 router.get("/:id", async (req: Request, res: Response) => {
   await notificationController.getNotificationById(req, res);
@@ -56,31 +101,25 @@ router.get("/:id", async (req: Request, res: Response) => {
  * @swagger
  * /api/notifications:
  *   post:
- *     summary: Cria um novo notification
+ *     summary: Cria uma nova notificação
  *     tags: [Notifications]
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               specieId:
- *                 type: integer
- *               breed:
- *                 type: string
- *               birthDate:
- *                 type: string
- *                 format: date
- *               weight:
- *                 type: number
+ *             $ref: '#/components/schemas/Notification'
  *     responses:
  *       201:
- *         description: Notification criado com sucesso
+ *         description: Notificação criada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Notification'
  *       500:
- *         description: Erro ao criar notification
+ *         description: Erro ao criar notificação
  */
 router.post("/", async (req: Request, res: Response) => {
   await notificationController.createNotification(req, res);
@@ -90,40 +129,36 @@ router.post("/", async (req: Request, res: Response) => {
  * @swagger
  * /api/notifications/{id}:
  *   put:
- *     summary: Atualiza um notification pelo ID
+ *     summary: Atualiza uma notificação pelo ID
  *     tags: [Notifications]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
- *         description: ID do notification
+ *         description: UUID da notificação
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: uuid
+ *           example: "302f8f76-414f-48a0-be8d-d934e8635666"
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               specieId:
- *                 type: integer
- *               breed:
- *                 type: string
- *               birthDate:
- *                 type: string
- *                 format: date
- *               weight:
- *                 type: number
+ *             $ref: '#/components/schemas/Notification'
  *     responses:
  *       200:
- *         description: Notification atualizado com sucesso
+ *         description: Notificação atualizada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Notification'
  *       404:
- *         description: Notification não encontrado
+ *         description: Notificação não encontrada
  *       500:
- *         description: Erro ao atualizar notification
+ *         description: Erro ao atualizar notificação
  */
 router.put("/:id", async (req: Request, res: Response) => {
   await notificationController.updateNotification(req, res);
@@ -133,22 +168,26 @@ router.put("/:id", async (req: Request, res: Response) => {
  * @swagger
  * /api/notifications/{id}:
  *   delete:
- *     summary: Remove um notification pelo ID
+ *     summary: Remove uma notificação pelo ID
  *     tags: [Notifications]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
- *         description: ID do notification
+ *         description: UUID da notificação
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: uuid
+ *           example: "302f8f76-414f-48a0-be8d-d934e8635666"
  *     responses:
  *       204:
- *         description: Notification removido com sucesso
+ *         description: Notificação removida com sucesso
  *       404:
- *         description: Notification não encontrado
+ *         description: Notificação não encontrada
  *       500:
- *         description: Erro ao remover notification
+ *         description: Erro ao remover notificação
  */
 router.delete("/:id", async (req: Request, res: Response) => {
   await notificationController.deleteNotification(req, res);

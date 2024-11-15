@@ -51,7 +51,6 @@ export class UserController {
       ) as UserAttributes;
 
       const userId = decoded.id;
-      console.log(userId);
 
       const user = await this.userService.getUserById(userId);
 

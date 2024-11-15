@@ -1,3 +1,4 @@
+import Device from "../../models/device.model";
 import Telemetry, {
   TelemetryData,
   TelemetryAttributes,
@@ -6,15 +7,38 @@ import { ITelemetryRepository } from "../interfaces/telemetry.repository.interfa
 
 export class TelemetryRepository implements ITelemetryRepository {
   async findAll(): Promise<TelemetryAttributes[]> {
-    return Telemetry.findAll();
+    return Telemetry.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "deletedAt"],
+      },
+      include: [
+        {
+          model: Device,
+          as: "device",
+          attributes: ["id", "serialNumber", "model"],
+        },
+      ],
+    });
   }
 
   async findById(id: string): Promise<TelemetryAttributes | null> {
-    return Telemetry.findByPk(id);
+    return Telemetry.findByPk(id, {
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "deletedAt"],
+      },
+      include: [
+        {
+          model: Device,
+          as: "device",
+          attributes: ["id", "serialNumber", "model"],
+        },
+      ],
+    });
   }
 
   async create(telemetryData: TelemetryData): Promise<TelemetryAttributes> {
-    return Telemetry.create(telemetryData);
+    const telemetry = await Telemetry.create(telemetryData);
+    return telemetry.get({ plain: true });
   }
 
   async update(
@@ -23,7 +47,8 @@ export class TelemetryRepository implements ITelemetryRepository {
   ): Promise<TelemetryAttributes | null> {
     const telemetry = await Telemetry.findByPk(id);
     if (telemetry) {
-      return telemetry.update(telemetryData);
+      await telemetry.update(telemetryData);
+      return telemetry.get({ plain: true });
     }
     return null;
   }

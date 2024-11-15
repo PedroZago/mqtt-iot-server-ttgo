@@ -3,15 +3,24 @@ import { IBreedRepository } from "../interfaces/breed.repository.interface";
 
 export class BreedRepository implements IBreedRepository {
   async findAll(): Promise<BreedAttributes[]> {
-    return Breed.findAll();
+    return Breed.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "deletedAt"],
+      },
+    });
   }
 
   async findById(id: string): Promise<BreedAttributes | null> {
-    return Breed.findByPk(id);
+    return Breed.findByPk(id, {
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "deletedAt"],
+      },
+    });
   }
 
   async create(breedData: BreedData): Promise<BreedAttributes> {
-    return Breed.create(breedData);
+    const breed = await Breed.create(breedData);
+    return breed.get({ plain: true });
   }
 
   async update(
@@ -20,7 +29,8 @@ export class BreedRepository implements IBreedRepository {
   ): Promise<BreedAttributes | null> {
     const breed = await Breed.findByPk(id);
     if (breed) {
-      return breed.update(breedData);
+      await breed.update(breedData);
+      return breed.get({ plain: true });
     }
     return null;
   }

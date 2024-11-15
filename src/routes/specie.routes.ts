@@ -13,13 +13,40 @@ const specieController = new SpecieController();
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     Specie:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           example: "123e4567-e89b-12d3-a456-426614174000"
+ *         name:
+ *           type: string
+ *           example: "Bovino"
+ *         description:
+ *           type: string
+ *           example: "Espécie de mamífero domesticado para produção de carne e leite"
+ */
+
+/**
+ * @swagger
  * /api/species:
  *   get:
  *     summary: Retorna todas as espécies
  *     tags: [Species]
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de todas as espécies
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Specie'
  *       500:
  *         description: Erro ao obter espécies
  */
@@ -33,16 +60,24 @@ router.get("/", async (req: Request, res: Response) => {
  *   get:
  *     summary: Retorna uma espécie pelo ID
  *     tags: [Species]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
- *         description: ID da espécie
+ *         description: UUID da espécie
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: uuid
+ *           example: "123e4567-e89b-12d3-a456-426614174000"
  *     responses:
  *       200:
  *         description: Espécie encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Specie'
  *       404:
  *         description: Espécie não encontrada
  *       500:
@@ -58,20 +93,21 @@ router.get("/:id", async (req: Request, res: Response) => {
  *   post:
  *     summary: Cria uma nova espécie
  *     tags: [Species]
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               habitat:
- *                 type: string
+ *             $ref: '#/components/schemas/Specie'
  *     responses:
  *       201:
  *         description: Espécie criada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Specie'
  *       500:
  *         description: Erro ao criar espécie
  */
@@ -85,27 +121,30 @@ router.post("/", async (req: Request, res: Response) => {
  *   put:
  *     summary: Atualiza uma espécie pelo ID
  *     tags: [Species]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
- *         description: ID da espécie
+ *         description: UUID da espécie
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: uuid
+ *           example: "123e4567-e89b-12d3-a456-426614174000"
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               habitat:
- *                 type: string
+ *             $ref: '#/components/schemas/Specie'
  *     responses:
  *       200:
  *         description: Espécie atualizada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Specie'
  *       404:
  *         description: Espécie não encontrada
  *       500:
@@ -121,13 +160,17 @@ router.put("/:id", async (req: Request, res: Response) => {
  *   delete:
  *     summary: Remove uma espécie pelo ID
  *     tags: [Species]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
- *         description: ID da espécie
+ *         description: UUID da espécie
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: uuid
+ *           example: "123e4567-e89b-12d3-a456-426614174000"
  *     responses:
  *       204:
  *         description: Espécie removida com sucesso

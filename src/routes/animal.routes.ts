@@ -39,8 +39,8 @@ const animalController = new AnimalController();
  *           example: "female"
  *         birthDate:
  *           type: string
- *           format: date
- *           example: "2020-05-15"
+ *           format: date-time
+ *           example: "2020-05-15T14:30:00Z"
  *         weight:
  *           type: number
  *           example: 350.5

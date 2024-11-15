@@ -44,6 +44,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body as { email: string; password: string };
 
@@ -54,16 +55,22 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
   try {
     const user = await User.findOne({ where: { email } });
-    if (!user || user.password !== password) {
+    if (!user) {
+      res.status(401).send({ message: "Credenciais inválidas" });
+      return;
+    }
+
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
       res.status(401).send({ message: "Credenciais inválidas" });
       return;
     }
 
     const accessToken = jwt.sign(
-      { id: user.id },
+      { id: user.id, role: user.role },
       process.env.JWT_SECRET || "",
       {
-        expiresIn: process.env.JWT_EXPIRES_IN,
+        expiresIn: process.env.JWT_EXPIRES_IN || "1h",
       }
     );
 
@@ -77,6 +84,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.status(400).send({ message: "Erro ao fazer login." });
   }
 };
+
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
   res.status(200).send({ message: "Desconectado com sucesso." });

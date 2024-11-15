@@ -6,15 +6,24 @@ import { ISpecieRepository } from "../interfaces/specie.repository.interface";
 
 export class SpecieRepository implements ISpecieRepository {
   async findAll(): Promise<SpecieAttributes[]> {
-    return Specie.findAll();
+    return Specie.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "deletedAt"],
+      },
+    });
   }
 
   async findById(id: string): Promise<SpecieAttributes | null> {
-    return Specie.findByPk(id);
+    return Specie.findByPk(id, {
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "deletedAt"],
+      },
+    });
   }
 
   async create(specieData: SpecieData): Promise<SpecieAttributes> {
-    return Specie.create(specieData);
+    const specie = await Specie.create(specieData);
+    return specie.get({ plain: true });
   }
 
   async update(
@@ -23,7 +32,8 @@ export class SpecieRepository implements ISpecieRepository {
   ): Promise<SpecieAttributes | null> {
     const specie = await Specie.findByPk(id);
     if (specie) {
-      return specie.update(specieData);
+      await specie.update(specieData);
+      return specie.get({ plain: true });
     }
     return null;
   }
