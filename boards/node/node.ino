@@ -1,86 +1,123 @@
-#include <TinyGPSPlus.h>
-#include <HardwareSerial.h>
+#include <Wire.h>
+#include <TinyGPS++.h>
+#include "MAX30105.h"
+#include "heartRate.h"
+#include <MPU9250.h>
+#include <WiFi.h>
+#include <WiFiUdp.h>
+#include <ArduinoJson.h>
+#include <NTPClient.h>
 
-// Configuração do pino UART para o módulo GPS
-#define RX_PIN 34  // Defina o pino RX conectado ao TX do módulo GPS
-#define TX_PIN 12  // Defina o pino TX conectado ao RX do módulo GPS
+#define GPS_RX_PIN 16
+#define GPS_TX_PIN 17
+#define WIFI_SSID "Desktop_F5364807"
+#define WIFI_PASSWORD "5071032903032618"
 
-// Instanciação do objeto TinyGPSPlus
+const char *gatewayIp = "192.168.1.100";
+const int gatewayPort = 1234;
+
+WiFiUDP udp;
 TinyGPSPlus gps;
+MAX30105 max;
+MPU9250 mpu;
 
-// Criação de uma instância de HardwareSerial para a comunicação serial com o GPS
-HardwareSerial serialGPS(1);  // Usamos o UART1 para o GPS
+byte rates[4];
+byte rateSpot = 0;
+long lastBeat = 0;
+float beatsPerMinute;
+int beatAvg;
+String nodeId = "node_01";
 
-unsigned long previousMillis = 0;
-const long interval = 1000;  // Intervalo de 1 segundo (1000 ms)
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org", 0, 60000); // Sincronização com NTP a cada 60 segundos
 
-void setup() {
-  Serial.begin(115200);                               // Inicializa o monitor serial
-  serialGPS.begin(9600, SERIAL_8N1, RX_PIN, TX_PIN);  // Inicializa a comunicação UART com o GPS
+void conectarWiFi()
+{
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(1000);
+    Serial.println("Conectando ao Wi-Fi...");
+  }
 
-  Serial.println(F("ESP32 GPS Example"));
-  Serial.println(F("Reading data from GPS module using TinyGPSPlus"));
+  Serial.println("Conectado ao Wi-Fi");
+  String ipAddress = WiFi.localIP().toString();
+  Serial.println("IP do ESP32: " + ipAddress);
 }
 
-void loop() {
-  unsigned long currentMillis = millis();
+void setup()
+{
+  Serial.begin(115200);
 
-  // Verifica se o intervalo de 1 segundo passou
-  if (currentMillis - previousMillis >= interval) {
-    previousMillis = currentMillis;
+  conectarWiFi();
 
-    // Processa os dados recebidos do módulo GPS
-    while (serialGPS.available() > 0) {
-      char c = serialGPS.read();  // Lê um caractere da serial
-      Serial.write(c);            // Imprime o caractere recebido diretamente no monitor serial
-      if (gps.encode(c)) {        // Passa o caractere para a biblioteca TinyGPSPlus
-        displayInfo();            // Exibe as informações do GPS
-      }
+  if (!max.begin(Wire, I2C_SPEED_FAST))
+    while (1)
+      ;
+  max.setup();
+  max.setPulseAmplitudeRed(0x0A);
+
+  Serial2.begin(9600, SERIAL_8N1, GPS_RX_PIN, GPS_TX_PIN);
+  timeClient.begin(); // Inicializando NTPClient
+}
+
+void loop()
+{
+  long irValue = max.getIR();
+  if (checkForBeat(irValue))
+  {
+    long delta = millis() - lastBeat;
+    lastBeat = millis();
+    beatsPerMinute = 60 / (delta / 1000.0);
+    if (beatsPerMinute > 20 && beatsPerMinute < 255)
+    {
+      rates[rateSpot++] = (byte)beatsPerMinute;
+      rateSpot %= 4;
+      beatAvg = 0;
+      for (byte x = 0; x < 4; x++)
+        beatAvg += rates[x];
+      beatAvg /= 4;
     }
-    Serial.println();
-  }
-}
-
-void displayInfo() {
-  // Exibe as coordenadas de localização (latitude e longitude)
-  Serial.print(F("Location: "));
-  if (gps.location.isValid()) {
-    Serial.print(gps.location.lat(), 6);
-    Serial.print(F(","));
-    Serial.print(gps.location.lng(), 6);
-  } else {
-    Serial.print(F("INVALID"));
   }
 
-  // Exibe a data
-  Serial.print(F("  Date: "));
-  if (gps.date.isValid()) {
-    Serial.print(gps.date.month());
-    Serial.print(F("/"));
-    Serial.print(gps.date.day());
-    Serial.print(F("/"));
-    Serial.print(gps.date.year());
-  } else {
-    Serial.print(F("INVALID"));
+  float temperature = max.readTemperature();
+  Serial.printf("IR=%ld, BPM=%.2f, Média BPM=%d, Temp=%.2f\n", irValue, beatsPerMinute, beatAvg, temperature);
+
+  while (Serial2.available() > 0)
+  {
+    gps.encode(Serial2.read());
+    if (gps.location.isUpdated())
+    {
+      String gpsData = "Lat: " + String(gps.location.lat(), 6) + " Lon: " + String(gps.location.lng(), 6);
+      Serial.println(gpsData);
+    }
   }
 
-  // Exibe o horário
-  Serial.print(F("  Time: "));
-  if (gps.time.isValid()) {
-    if (gps.time.hour() < 10) Serial.print(F("0"));
-    Serial.print(gps.time.hour());
-    Serial.print(F(":"));
-    if (gps.time.minute() < 10) Serial.print(F("0"));
-    Serial.print(gps.time.minute());
-    Serial.print(F(":"));
-    if (gps.time.second() < 10) Serial.print(F("0"));
-    Serial.print(gps.time.second());
-    Serial.print(F("."));
-    if (gps.time.centisecond() < 10) Serial.print(F("0"));
-    Serial.print(gps.time.centisecond());
-  } else {
-    Serial.print(F("INVALID"));
-  }
+  mpu.update();
+  float ax = mpu.getAccX(), ay = mpu.getAccY(), az = mpu.getAccZ();
+  float gx = mpu.getGyroX(), gy = mpu.getGyroY(), gz = mpu.getGyroZ();
+  Serial.printf("Aceleração: (%.2f, %.2f, %.2f), Giroscópio: (%.2f, %.2f, %.2f)\n", ax, ay, az, gx, gy, gz);
 
-  Serial.println();
+  // Sincronização com o servidor NTP para pegar o timestamp
+  timeClient.update();
+  String timestamp = timeClient.getFormattedTime();
+
+  StaticJsonDocument<512> doc;
+  doc["nodeId"] = nodeId;
+  doc["temperature"] = temperature;
+  doc["heartRate"] = beatAvg;
+  doc["latitude"] = gps.location.lat();
+  doc["longitude"] = gps.location.lng();
+  doc["altitude"] = gps.altitude.meters();
+  doc["speed"] = gps.speed.kmph();
+  doc["timestamp"] = timestamp;
+
+  String jsonData;
+  serializeJson(doc, jsonData);
+
+  udp.beginPacket(gatewayIp, gatewayPort);
+  udp.write((const uint8_t *)jsonData.c_str(), jsonData.length());
+  udp.endPacket();
+
+  delay(10000);
 }

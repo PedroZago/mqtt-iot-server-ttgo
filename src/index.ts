@@ -56,6 +56,8 @@ app.get("/api/health", (_: Request, res: Response) => {
   res.status(200).send("Servidor em execução.");
 });
 
+initMqttService(io);
+
 io.on("connection", (socket) => {
   logger.info("Novo cliente conectado.");
 
