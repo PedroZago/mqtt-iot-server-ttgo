@@ -7,8 +7,11 @@ import Specie from "../../models/specie.model";
 import { IAnimalRepository } from "../interfaces/animal.repository.interface";
 
 export class AnimalRepository implements IAnimalRepository {
-  async findAll(limit: number, offset: number): Promise<AnimalAttributes[]> {
-    return Animal.findAll({
+  async findAll(
+    limit: number,
+    offset: number
+  ): Promise<{ data: AnimalAttributes[]; total: number }> {
+    const { count, rows } = await Animal.findAndCountAll({
       attributes: {
         exclude: ["createdAt", "updatedAt", "deletedAt"],
       },
@@ -27,6 +30,11 @@ export class AnimalRepository implements IAnimalRepository {
       limit,
       offset,
     });
+
+    return {
+      data: rows,
+      total: count,
+    };
   }
 
   async findById(id: string): Promise<AnimalAttributes | null> {

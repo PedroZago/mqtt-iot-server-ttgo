@@ -16,8 +16,17 @@ export class AnimalController {
       const limit = parseInt(req.query.limit as string) || 10;
       const offset = parseInt(req.query.offset as string) || 0;
 
-      const animals = await this.animalService.getAllAnimals(limit, offset);
-      return res.status(200).json(animals);
+      const { data, total, totalPages, currentPage } =
+        await this.animalService.getAllAnimals(limit, offset);
+      return res.status(200).json({
+        data,
+        pagination: {
+          total,
+          totalPages,
+          currentPage,
+          limit,
+        },
+      });
     } catch (error) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });

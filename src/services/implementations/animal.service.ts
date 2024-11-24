@@ -12,8 +12,23 @@ export class AnimalService implements IAnimalService {
   async getAllAnimals(
     limit: number,
     offset: number
-  ): Promise<AnimalAttributes[]> {
-    return this.AnimalRepository.findAll(limit, offset);
+  ): Promise<{
+    data: AnimalAttributes[];
+    total: number;
+    totalPages: number;
+    currentPage: number;
+  }> {
+    const { data, total } = await this.AnimalRepository.findAll(limit, offset);
+
+    const totalPages = Math.ceil(total / limit);
+    const currentPage = Math.floor(offset / limit);
+
+    return {
+      data,
+      total,
+      totalPages,
+      currentPage,
+    };
   }
 
   async getAnimalById(id: string): Promise<AnimalAttributes | null> {

@@ -4,6 +4,19 @@ import { mqttClient } from "../config/mqtt";
 import { TelemetryService } from "../services/implementations/telemetry.service";
 import { TelemetryRepository } from "../repositories/implementations/telemetry.repository";
 import { TelemetryData } from "../models/telemetry.model";
+import { verifyBehavior } from "../utils/verifyBehavior";
+
+export interface MqttMessageData {
+  topic: string;
+  deviceId: string;
+  temperature: number;
+  heartRate: number;
+  behavior: string;
+  latitude: number;
+  longitude: number;
+  altitude: number;
+  speed: number;
+}
 
 // Instanciando os serviços
 const telemetryRepository = new TelemetryRepository();
@@ -13,9 +26,12 @@ const telemetryService = new TelemetryService(telemetryRepository);
 let messageBuffer: TelemetryData[] = [];
 const BATCH_SIZE = 10; // Número de mensagens para processar em lote
 const BATCH_INTERVAL = 5000; // Intervalo para processar o lote (5 segundos)
+let isProcessing = false; // Flag para evitar processamento simultâneo
 
 const processBatch = async () => {
-  if (messageBuffer.length > 0) {
+  if (messageBuffer.length > 0 && !isProcessing) {
+    isProcessing = true; // Indica que estamos processando
+
     const batch = [...messageBuffer];
     messageBuffer = []; // Limpa o buffer após processar
 
@@ -34,6 +50,8 @@ const processBatch = async () => {
       );
     } catch (error) {
       logger.error("Error processing batch :", error);
+    } finally {
+      isProcessing = false; // Libera o processamento após o término
     }
   }
 };
@@ -64,7 +82,34 @@ export const initMqttService = (io: Server): void => {
 
   mqttClient.on("message", async (topic, message) => {
     try {
-      const telemetryData: TelemetryData = JSON.parse(message.toString());
+      const parsedMessage = JSON.parse(message.toString()) as MqttMessageData;
+
+      const behavior = verifyBehavior(parsedMessage);
+
+      const {
+        topic,
+        temperature,
+        heartRate,
+        latitude,
+        longitude,
+        altitude,
+        speed,
+        deviceId,
+      } = parsedMessage;
+
+      const telemetryData: TelemetryData = {
+        topic,
+        message: {
+          temperature,
+          heartRate,
+          behavior,
+          latitude,
+          longitude,
+          altitude,
+          speed,
+        },
+        deviceId,
+      };
 
       // Adiciona a nova mensagem ao buffer
       messageBuffer.push(telemetryData);

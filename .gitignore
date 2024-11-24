@@ -49,10 +49,5 @@ coverage/
 *.bak
 *.swp
 
-# Arquivos de pacotes bloqueados
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
 # Mosquitto
 passwords.txt
