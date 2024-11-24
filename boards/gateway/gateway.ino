@@ -5,7 +5,6 @@
 #include <Adafruit_SSD1306.h>
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
-#include <NTPClient.h>
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -24,12 +23,14 @@ const int gatewayPort = 1234;
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-void setup() {
+void setup()
+{
   // Inicializa a comunicação serial
   Serial.begin(115200);
 
   // Inicializa o display OLED
-  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
+  {
     Serial.println("Falha ao inicializar o display OLED");
     while (true)
       ;
@@ -44,7 +45,8 @@ void setup() {
   display.print("Conectando ao Wi-Fi...");
   display.display();
 
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(1000);
     Serial.println("Conectando ao Wi-Fi...");
   }
@@ -65,25 +67,31 @@ void setup() {
 
   // Configuração do MQTT
   client.setServer(mqtt_server, mqtt_port);
-  client.setCallback([](char *topic, byte *payload, unsigned int length) {
+  client.setCallback([](char *topic, byte *payload, unsigned int length)
+                     {
     Serial.print("Mensagem recebida no tópico: ");
     for (unsigned int i = 0; i < length; i++) {
       Serial.print((char)payload[i]);
     }
-    Serial.println();
-  });
+    Serial.println(); });
 }
 
-void loop() {
+void loop()
+{
   // Reconectar ao MQTT se desconectado
-  if (!client.connected()) {
-    while (!client.connected()) {
+  if (!client.connected())
+  {
+    while (!client.connected())
+    {
       Serial.print("Tentando conexão MQTT...");
       String clientId = "Gateway_" + String(WiFi.macAddress());
-      if (client.connect(clientId.c_str())) {
+      if (client.connect(clientId.c_str()))
+      {
         Serial.println("Conectado ao MQTT");
         client.subscribe(mqtt_topic);
-      } else {
+      }
+      else
+      {
         Serial.print("Falha na conexão. Código de erro: ");
         Serial.println(client.state());
         delay(5000);
@@ -93,7 +101,8 @@ void loop() {
 
   // Processar pacotes UDP
   int packetSize = udp.parsePacket();
-  if (packetSize) {
+  if (packetSize)
+  {
     Serial.printf("Pacote recebido com tamanho: %d bytes\n", packetSize);
 
     char packetBuffer[512];
@@ -101,7 +110,8 @@ void loop() {
     StaticJsonDocument<512> doc;
     DeserializationError error = deserializeJson(doc, packetBuffer);
 
-    if (!error) {
+    if (!error)
+    {
       String deviceId = doc["deviceId"].as<String>();
       String timestamp = doc["timestamp"].as<String>();
       Serial.printf("Recebido de %s no timestamp %s\n", deviceId.c_str(), timestamp.c_str());
@@ -109,13 +119,28 @@ void loop() {
       // Enviar dados via MQTT
       String payload;
       serializeJson(doc, payload);
-      if (client.publish(mqtt_topic, payload.c_str())) {
+      bool mqttStatus = client.publish(mqtt_topic, payload.c_str());
+
+      if (mqttStatus)
+      {
         Serial.println("Mensagem enviada com sucesso via MQTT");
-      } else {
+      }
+      else
+      {
         Serial.print("Falha ao enviar mensagem via MQTT. Código de erro: ");
         Serial.println(client.state());
+
+        // Tente reconectar ao MQTT se houver falha
+        if (!client.connected())
+        {
+          Serial.println("Reconectando ao MQTT...");
+          String clientId = "Gateway_Recovery_" + String(WiFi.macAddress());
+          client.connect(clientId.c_str());
+        }
       }
-    } else {
+    }
+    else
+    {
       Serial.println("Falha ao processar JSON");
     }
   }

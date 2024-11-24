@@ -8,7 +8,6 @@
 #include <ArduinoJson.h>
 #include <NTPClient.h>
 #include <SPI.h>
-#include <SD.h> // Biblioteca para trabalhar com cartão SD
 
 #define GPS_RX_PIN 16
 #define GPS_TX_PIN 17
@@ -30,12 +29,10 @@ byte rateSpot = 0;
 long lastBeat = 0;
 float beatsPerMinute;
 int beatAvg;
-String nodeId = "a1d7f7bc-3c64-4421-9b43-6eab123f3901";
+String deviceId = "a1d7f7bc-3c64-4421-9b43-6eab123f3901";
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", 0, 60000); // Sincronização com NTP a cada 60 segundos
-
-File dataFile; // Variável para armazenar o arquivo no cartão SD
 
 void conectarWiFi()
 {
@@ -56,20 +53,6 @@ void conectarWiFi()
   else
   {
     Serial.println("Falha ao conectar ao Wi-Fi");
-  }
-}
-
-void inicializarCartaoSD()
-{
-  if (!SD.begin(5)) // Pino 5 para o CS do cartão SD (ajuste se necessário)
-  {
-    Serial.println("Falha ao inicializar o cartão SD!");
-    while (1)
-      ;
-  }
-  else
-  {
-    Serial.println("Cartão SD inicializado com sucesso");
   }
 }
 
@@ -116,9 +99,6 @@ void setup()
   {
     Serial.println("Sincronização NTP bem-sucedida");
   }
-
-  // Inicializar o cartão SD para backup
-  inicializarCartaoSD();
 }
 
 void loop()
@@ -173,7 +153,7 @@ void loop()
   // Criação do JSON
   StaticJsonDocument<512> doc;
   doc["topic"] = mqtt_topic;
-  doc["nodeId"] = nodeId;
+  doc["deviceId"] = deviceId;
   doc["temperature"] = temperature;
   doc["heartRate"] = beatAvg;
   doc["latitude"] = gps.location.lat();
@@ -197,19 +177,6 @@ void loop()
   else
   {
     Serial.println("Falha ao iniciar envio do pacote UDP");
-  }
-
-  // Salvar os dados no cartão SD como backup
-  dataFile = SD.open("/data_backup.txt", FILE_APPEND);
-  if (dataFile)
-  {
-    dataFile.println(jsonData); // Salva os dados JSON no arquivo
-    dataFile.close();           // Fecha o arquivo
-    Serial.println("Dados salvos no cartão SD");
-  }
-  else
-  {
-    Serial.println("Erro ao abrir o arquivo para escrita no cartão SD");
   }
 
   Serial.println("---------------");
